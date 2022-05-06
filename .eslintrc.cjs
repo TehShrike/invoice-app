@@ -8,10 +8,9 @@ module.exports = {
 	root: true,
 	parser: `@typescript-eslint/parser`,
 	parserOptions: {
-    tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json'],
-    extraFileExtensions: ['.svelte'],
-    project: `./tsconfig.json`,
+		tsconfigRootDir: __dirname,
+		project: ['./tsconfig.json'],
+		extraFileExtensions: ['.svelte'],
 		ecmaVersion: 2021,
 		allowImportExportEverywhere: true,
 		sourceType: `module`,
@@ -28,14 +27,13 @@ module.exports = {
 			},
 		},
 		{
-			files: [ `**/*.ts` ],
+			files: [ `**/*.ts`, `**/*.svelte` ],
 			parser: `@typescript-eslint/parser`,
 			parserOptions: {
 				project: `./tsconfig.json`,
 			},
 			rules: {
 				semi: `off`,
-				'import/no-unresolved': 0,
 				'@typescript-eslint/no-misused-promises': error,
 				'import/extensions': 0,
 				'@typescript-eslint/semi': never,
@@ -53,7 +51,7 @@ module.exports = {
 		es2021: true,
 	},
 	// extends: [
-	//     'eslint:recommended',
+	//	 'eslint:recommended',
 	// ],
 	rules: {
 		'require-atomic-updates': `off`,
