@@ -7,11 +7,13 @@
   "scripts": {
     "test:types": "tsc --noEmit",
     "test:svelte": "svelte-check --threshold=warning --workspace=landing-page",
+    "create_symlinks": "symlink shared node_modules/shared",
     "test": "run-p test:**",
     "serve": "live-server --no-css-inject --no-browser public",
     "build": "node build.js",
     "watch": "node cheap_watch.cjs landing-page npm run build",
-    "dev": "run-p watch serve"
+    "dev": "run-p watch serve",
+    "postinstall": "npm run create_symlinks"
   },
   "repository": {
     "type": "git",
@@ -40,6 +42,8 @@
     "esbuild": "^0.14.38",
     "esbuild-svelte": "^0.7.0",
     "svelte-preprocess-esbuild": "^2.0.0",
-    "typescript": "^4.6.4"
+    "symlink-cli": "^1.0.0",
+    "typescript": "^4.6.4",
+    "warg": "^2.1.1"
   }
 }

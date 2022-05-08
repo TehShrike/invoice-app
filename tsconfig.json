@@ -1,6 +1,6 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
-  "include": ["landing-page/**/*"],
+  "include": ["landing-page/**/*","shared/**/*"],
   "exclude": ["node_modules/*", "public/*"],
   "compilerOptions": {
     "target": "es2022",
