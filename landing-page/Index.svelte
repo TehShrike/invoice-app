@@ -1,10 +1,14 @@
 <script lang="ts">
 	import Child from './Child.svelte'
 
-	import meh from './some_lib.ts'
+	import meh from './some_lib'
 	let wat: string = `hi`
 
-	wat = 2
+	wat = 3
+	const a = `no`
+
+	let sup = 4
+
 </script>
 <h1>Yo yo yo</h1>
 
