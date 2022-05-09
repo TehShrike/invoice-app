@@ -37,6 +37,7 @@ module.exports = {
 				'@typescript-eslint/no-misused-promises': error,
 				'import/extensions': 0,
 				'@typescript-eslint/semi': never,
+				'@typescript/no-unused-vars': [ `warn`, { args: `after-used`, argsIgnorePattern: `^_` }],
 			},
 		},
 	],
@@ -125,7 +126,7 @@ module.exports = {
 		'yield-star-spacing': [ `warn`, `both` ],
 
 		'no-undef': error,
-		'no-unused-vars': [ `warn`, { args: `after-used`, argsIgnorePattern: `^_` }],
+		// 'no-unused-vars': [ `warn`, { args: `after-used`, argsIgnorePattern: `^_` }],
 		'no-empty': [ `warn`, { allowEmptyCatch: true }],
 		'no-debugger': warn,
 
