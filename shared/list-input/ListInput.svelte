@@ -1,22 +1,47 @@
-<script>
+<script lang=ts>
 	import { createEventDispatcher } from 'svelte'
+	import type { SvelteComponent } from 'svelte'
+	import type { BasicObservable } from 'warg'
 
 	import { computed as warg_computed, value as warg_value } from 'warg'
 
 	const dispatch = createEventDispatcher()
 
-	export let columns
-	export let rows
-	export let external_stores
-	export let empty_row_factory
-	export let row_is_empty_predicate
+	type Row = {
+		[key: string]: any
+	}
+
+	type RowStores = {
+		[key: string]: BasicObservable<any>
+	}
+
+	type Column = {
+		name: string,
+		property: string,
+		component: SvelteComponent,
+		header_text_align?: `right` | `left`
+		initial_fraction?: number,
+		width?: string,
+		computed?: (row: Row) => any,
+		props: {
+			[key: string]: any
+		}
+	}
+
+	export let columns: Array<Column>
+	export let rows: Array<Row>
+	export let external_stores: {
+		[key: string]: BasicObservable<any>
+	}
+	export let empty_row_factory: () => { [key: string] : any }
+	export let row_is_empty_predicate: (row: Row) => boolean
 
 	$: grid_template_columns = columns.map(
 		({ initial_fraction = 1, width }) => width ? width : `${initial_fraction}fr`,
 	).join(` `)
 
 	let row_key = 0
-	const row_to_stores = row => {
+	const row_to_stores = (row: Row) => {
 		const value_stores = Object.fromEntries(
 			columns
 				.filter(({ computed }) => !computed)
@@ -37,9 +62,11 @@
 			...external_stores,
 		}
 
-		columns.filter(({ computed }) => computed)
+		columns
 			.forEach(({ property, computed }) => {
-				object_of_stores[property] = warg_computed(object_of_stores, computed)
+				if (computed) {
+					object_of_stores[property] = warg_computed(object_of_stores, computed)
+				}
 			})
 
 		const store_of_values = warg_computed(object_of_stores, all_values => all_values)
@@ -54,7 +81,7 @@
 	// row_stores is the canonical array that should be written to when state needs to change
 	export let row_stores = rows.map(row_to_stores)
 
-	const make_store_that_updates_when_array_contents_change = row_stores => {
+	const make_store_that_updates_when_array_contents_change = (row_stores: Array<ReturnType<typeof row_to_stores>>) => {
 		const index_to_values_object = Object.fromEntries(row_stores.map(
 			({ store_of_values }, index) => [ index, store_of_values ],
 		))
@@ -73,7 +100,8 @@
 	}
 
 	const clean_up_empty_rows_and_ensure_final_is_empty = () => {
-		const should_be_removed = ({ key, store_of_values }, index) => index !== row_stores.length - 1
+		type KeyAndStoreOfValues = { key: number, store_of_values: BasicObservable<Row> }
+		const should_be_removed = ({ key, store_of_values }: KeyAndStoreOfValues, index: number) => index !== row_stores.length - 1
 				&& key !== current_focused_row_key
 				&& row_is_empty_predicate(store_of_values.get())
 
@@ -102,9 +130,9 @@
 	$: $row_contents_store && row_stores && clean_up_empty_rows_and_ensure_final_is_empty()
 	$: $row_contents_store && row_stores && update_rows_property()
 
-	const focus_functions = {}
+	const focus_functions: {[key: string]: () => {}} = {}
 
-	const on_keypress = (event, row_key, column_index) => {
+	const on_keypress = (event: KeyboardEvent, row_key: number, column_index: number) => {
 		if (event.key === `Enter`) {
 			const row_index = row_stores.findIndex(({ key }) => key === row_key)
 			const target_row_index = row_index + (event.shiftKey ? -1 : 1)
@@ -116,13 +144,13 @@
 		}
 	}
 
-	let current_focused_row_key = null
+	let current_focused_row_key: null | number = null
 
-	const on_focus = row_key => {
+	const on_focus = (row_key: number) => {
 		current_focused_row_key = row_key
 	}
 	
-	const on_blur = row_key => {
+	const on_blur = (row_key: number) => {
 		if (row_key === current_focused_row_key) {
 			current_focused_row_key = null
 		}

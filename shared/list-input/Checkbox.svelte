@@ -1,7 +1,9 @@
-<script>
-	export let store
+<script lang=ts>
+	import type { Writable } from 'svelte/store'
 
-	let input_element
+	export let store: Writable<boolean>
+
+	let input_element: HTMLInputElement
 
 	export const set_focus = () => input_element.focus()
 

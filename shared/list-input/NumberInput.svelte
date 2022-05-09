@@ -1,4 +1,4 @@
-<script>
+<script lang=ts>
 	import number from 'financial-number'
 
 	import InputStyle from './InputStyle.svelte'

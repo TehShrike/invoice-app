@@ -1,11 +1,12 @@
-<script>
+<script lang=ts>
+	import type { Writable } from 'svelte/store'
 	import InputStyle from './InputStyle.svelte'
 
 	export let disabled = false
 
-	export let store
+	export let store: Writable<string>
 
-	let input_element
+	let input_element: HTMLInputElement
 
 	export const set_focus = () => {
 		input_element.focus()
