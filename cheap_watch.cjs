@@ -21,4 +21,10 @@ execute()
 
 watcher.init()
 
-watcher.on(`+`, execute)
+watcher.on(`+`, () => {
+	try {
+		const output = execute()
+	} catch (err) {
+		console.error(err)
+	}
+})
