@@ -29,10 +29,10 @@
 	}
 
 	export let columns: Array<Column>
-	export let rows: Array<Row>
+	export let rows: Array<Row> = []
 	export let external_stores: {
 		[key: string]: BasicObservable<any>
-	}
+	} = {}
 	export let empty_row_factory: () => { [key: string] : any }
 	export let row_is_empty_predicate: (row: Row) => boolean
 
@@ -200,11 +200,11 @@
 		display: grid;
 		gap: 1px;
 
+		--input-text-color: var(--black);
 		--mid-gray: #888787;
-		--cell-outline-color: var(--mid-gray);
-		--focus-border-color: #6a6862;
-		--focus-background-color: floralwhite;
-		--black: #333;
+		--cell-outline-color: var(--black);
+		--focus-border-color: var(--light_blue);
+		--focus-background-color: var(--beige);
 	}
 
 	[role=row] {
@@ -227,9 +227,10 @@
 	}
 
 	[role=cell]:focus-within {
-		border-radius: 2px;
-		-webkit-box-shadow: 0 0 0 2px var(--focus-border-color);
-		box-shadow: 0 0 0 2px var(--focus-border-color);
+		border-radius: 3px;
+		-webkit-box-shadow: 0 0 0 3px var(--focus-border-color);
+		box-shadow: 0 0 0 3px var(--focus-border-color);
+		outline-color: var(--focus-border-color);
 		z-index: 1;
 	}
 

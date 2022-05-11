@@ -6,7 +6,7 @@
 
 	export let store: Writable<string>
 
-	let input_element: HTMLInputElement
+	let input_element: HTMLTextAreaElement
 
 	export const set_focus = () => {
 		input_element.focus()
@@ -43,30 +43,31 @@
 <style>
 	/* cribbed from https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/ */
 	.grow-wrap {
-	  display: grid;
+		display: grid;
+		width: 100%;
 	}
 	.grow-wrap::after {
-	  /* Note the weird space! Needed to preventy jumpy behavior */
-	  content: attr(data-replicated-value) " ";
+		/* Note the weird space! Needed to preventy jumpy behavior */
+		content: attr(data-replicated-value) " ";
 
-	  /* This is how textarea text behaves */
-	  white-space: pre-wrap;
+		/* This is how textarea text behaves */
+		white-space: pre-wrap;
 
-	  /* Hidden from view, clicks, and screen readers */
-	  visibility: hidden;
+		/* Hidden from view, clicks, and screen readers */
+		visibility: hidden;
 	}
 	textarea {
-	  resize: none;
-	  overflow: hidden;
+		resize: none;
+		overflow: hidden;
 	}
 	textarea,
 	.grow-wrap::after {
-	  /* Identical styling required!! */
-	  padding: 4px 8px;
+		/* Identical styling required!! */
+		padding: 4px 8px;
 
-	  font: inherit;
+		font: inherit;
 
-	  /* Place on top of each other */
-	  grid-area: 1 / 1 / 2 / 2;
+		/* Place on top of each other */
+		grid-area: 1 / 1 / 2 / 2;
 	}
 </style>
