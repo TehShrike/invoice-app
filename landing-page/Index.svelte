@@ -1,15 +1,14 @@
 <script lang="ts">
-	import Child from './Child.svelte'
-
-	import meh from './some_lib'
-	let wat: string = `hi`
-
-	wat = 3
-	const a = `no`
-
-	let sup = 4
+	import CreateInvoice from './CreateInvoice.svelte'
 
 </script>
-<h1>Yo yo yo</h1>
 
-<Child some_num='wat' />
+<h1>Banner Invoice</h1>
+<p>
+	Create an invoice for free and print it or save it as a PDF right now without entering your email address.
+</p>
+<p>
+	Enter the invoice details quickly using only the keyboard (press Tab to go to the next field).  Busywork like creating invoices should be easy and over with quickly.
+</p>
+
+<CreateInvoice />
