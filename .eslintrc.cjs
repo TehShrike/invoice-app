@@ -38,6 +38,7 @@ module.exports = {
 				'import/extensions': 0,
 				'@typescript-eslint/semi': never,
 				'@typescript/no-unused-vars': [ `warn`, { args: `after-used`, argsIgnorePattern: `^_` }],
+				'@typescript/comma-dangle': [ `warn`, `always-multiline` ]
 			},
 		},
 	],
@@ -68,7 +69,7 @@ module.exports = {
 		}),
 		'block-spacing': always,
 		'brace-style': 1,
-		'comma-dangle': [ `warn`, `always-multiline` ],
+		// 'comma-dangle': [ `warn`, `always-multiline` ],
 		'comma-spacing': [ `warn`, { before: false, after: true }],
 		'comma-style': 1,
 		curly: 1,
