@@ -26,6 +26,6 @@
 		width: 100%;
 		margin: 0;
 		padding: 0;
-		background-color: #f2f2f2;
+		background-color: rgb(var(--black_rbg), 0.1);
 	}
 </style>
