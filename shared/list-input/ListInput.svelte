@@ -215,6 +215,7 @@
 	[role=columnheader] {
 		display: grid;
 		font-weight: 500;
+		font-size: 18px;
 
 		padding: 8px;
 	}
