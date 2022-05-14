@@ -1,16 +1,18 @@
 <script lang=ts>
+	import type { Writable } from 'svelte/store'
 	import number from 'financial-number'
+	import type { FinancialNumber } from 'financial-number'
 
 	import InputStyle from './InputStyle.svelte'
 
 	export let min = 0
-	export let max = null
+	export let max: number | null = null
 	export let disabled = false
 	export let precision = 2
 
-	export let store
+	export let store: Writable<FinancialNumber>
 
-	let input_element
+	let input_element: HTMLInputElement
 
 	export const set_focus = () => {
 		input_element.focus()
@@ -22,16 +24,16 @@
 	$: max !== null && typeof max !== `number` && console.error(`max should be of type number instead of "${typeof max}" ("${max}")`)
 	$: typeof precision !== `number` && console.error(`precision should be of type number instead of "${typeof precision}" ("${precision}")`)
 
-	const handle_input_value = input_value => {
+	const handle_input_value = (input_value: number) => {
 		const does_not_exceed_max = max === null || input_value <= max
 		const does_not_subceed_min = min === null || input_value >= min
 		if (
 			typeof input_value === `number`
 			&& does_not_subceed_min
 			&& does_not_exceed_max
-			&& number(input_value).mod(step).equal(`0`)
+			&& number(input_value.toString()).mod(step).equal(`0`)
 		) {
-			$store = number(input_value).changePrecision(precision)
+			$store = number(input_value.toString()).changePrecision(precision)
 		}
 	}
 
@@ -43,7 +45,7 @@
 		// I think this might be extraneous now – I wish I could detect the difference between
 		// "empty" and "user typed jibberish"
 		if (input_value === null || !$store.equal(input_value.toString())) {
-			input_value = parseFloat($store)
+			input_value = parseFloat($store.toString())
 		}
 
 		if ($store.getPrecision() !== number(input_value.toString()).getPrecision()) {
@@ -51,7 +53,7 @@
 		}
 	}
 
-	let input_value = parseFloat(number($store))
+	let input_value: number = parseFloat($store.toString())
 	
 	$: input_element && validate_input_value()
 

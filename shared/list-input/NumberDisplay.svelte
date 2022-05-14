@@ -1,6 +1,7 @@
 <script lang=ts>
 	import type { Writable } from 'svelte/store'
 	import InputStyle from './InputStyle.svelte'
+	import type { FinancialNumber } from 'financial-number'
 
 	export let store: Writable<FinancialNumber>
 </script>

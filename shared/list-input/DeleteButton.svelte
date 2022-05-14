@@ -3,7 +3,7 @@
 
 	const dispatch = createEventDispatcher()
 
-	let input_element
+	let input_element: HTMLButtonElement
 
 	export const set_focus = () => input_element.focus()
 
@@ -13,7 +13,7 @@
 		})
 	}
 
-	const on_keypress = event => {
+	const on_keypress = (event: KeyboardEvent) => {
 		if (event.key === `Enter`) {
 			event.preventDefault()
 		}
