@@ -1,5 +1,6 @@
 <script lang="ts">
 	import number from 'financial-number'
+	import type { FinancialNumber } from 'financial-number'
 
 	import NumberInput from 'shared/list-input/NumberInput.svelte'
 	import Checkbox from 'shared/list-input/Checkbox.svelte'
@@ -40,7 +41,7 @@
 		component: NumberDisplay,
 		initial_fraction: 2.5,
 		header_text_align: `right`,
-		computed: ({ quantity, price, tax }) => quantity.times(price).changePrecision(2),
+		computed: ({ quantity, price, tax }: { quantity:FinancialNumber, price: FinancialNumber, tax: FinancialNumber }) => quantity.times(price).changePrecision(2),
 	}, {
 		name: ``,
 		component: DeleteButton,
@@ -57,8 +58,6 @@
 		&& row.description === ``
 		&& row.price.equal(`0.00`)
 </script>
-
-Invoice interface here
 
 <ListInput
 	{columns}

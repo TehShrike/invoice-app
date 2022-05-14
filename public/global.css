@@ -16,6 +16,8 @@
 	--light: rgb(var(--light_rbg));
 	--white_rbg: 255,255,248;
 	--white: rgb(var(--white_rbg));
+
+	--base-content-gap: 8px;
 }
 
 html, body {
