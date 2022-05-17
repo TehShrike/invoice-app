@@ -9,8 +9,16 @@
 	import DeleteButton from 'shared/list-input/DeleteButton.svelte'
 
 	import ListInput from 'shared/list-input/ListInput.svelte'
+	import type { Column, AnyRow } from 'shared/list-input/ListInput.svelte'
 
-	const columns = [{
+	type Row = {
+		description: string,
+		quantity: FinancialNumber,
+		price: FinancialNumber,
+		total: FinancialNumber
+	}
+
+	const columns: Column<Row>[] = [{
 		name: `Description`,
 		property: `description`,
 		component: TextArea,
@@ -41,7 +49,7 @@
 		component: NumberDisplay,
 		initial_fraction: 2.5,
 		header_text_align: `right`,
-		computed: ({ quantity, price, tax }: { quantity:FinancialNumber, price: FinancialNumber, tax: FinancialNumber }) => quantity.times(price).changePrecision(2),
+		computed: ({ quantity, price }: { quantity: FinancialNumber, price: FinancialNumber }) => quantity.times(price).changePrecision(2),
 	}, {
 		name: ``,
 		component: DeleteButton,
@@ -57,10 +65,13 @@
 	const row_is_empty_predicate = (row: ReturnType<typeof empty_row_factory>) => row.quantity.equal(`1`)
 		&& row.description === ``
 		&& row.price.equal(`0.00`)
+
+	const columns_type_cast = columns as Column<AnyRow>[]
+	const row_is_empty_predicate_type_cast = row_is_empty_predicate as (row: AnyRow) => boolean
 </script>
 
 <ListInput
-	{columns}
+	columns={columns_type_cast}
 	{empty_row_factory}
-	{row_is_empty_predicate}
+	row_is_empty_predicate={row_is_empty_predicate_type_cast}
 />

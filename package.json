@@ -7,7 +7,7 @@
   "scripts": {
     "prepare": "npm run create_symlinks",
     "test:types": "tsc --noEmit",
-    "test:svelte": "svelte-check --threshold=warning --workspace=landing-page",
+    "test:svelte": "svelte-check --compiler-warnings 'a11y-label-has-associated-control:ignore' --threshold=warning --workspace=.",
     "create_symlinks": "symlink shared node_modules/shared",
     "test": "run-p test:**",
     "serve": "live-server --no-css-inject --no-browser public",

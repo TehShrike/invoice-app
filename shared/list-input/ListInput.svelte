@@ -1,52 +1,51 @@
+<script context=module lang=ts>
+	import type { SvelteComponent } from 'svelte'
+
+	export type AnyRow = {
+		[key: string]: any
+	}
+
+	export type Column<Row> = {
+		name: string,
+		property?: string,
+		component: typeof SvelteComponent,
+		header_text_align?: `right` | `left`
+		initial_fraction?: number,
+		width?: string,
+		computed?: (row: Row) => any,
+		props?: {
+			[key: string]: any
+		}
+	}
+</script>
+
 <script lang=ts>
 	import { createEventDispatcher } from 'svelte'
-	import type { SvelteComponent } from 'svelte'
 	import type { BasicObservable } from 'warg'
 
 	import { computed as warg_computed, value as warg_value } from 'warg'
 
 	const dispatch = createEventDispatcher()
 
-	type Row = {
-		[key: string]: any
-	}
-
-	type RowStores = {
-		[key: string]: BasicObservable<any>
-	}
-
-	type Column = {
-		name: string,
-		property: string,
-		component: SvelteComponent,
-		header_text_align?: `right` | `left`
-		initial_fraction?: number,
-		width?: string,
-		computed?: (row: Row) => any,
-		props: {
-			[key: string]: any
-		}
-	}
-
-	export let columns: Array<Column>
-	export let rows: Array<Row> = []
+	export let columns: Array<Column<AnyRow>>
+	export let rows: Array<AnyRow> = []
 	export let external_stores: {
 		[key: string]: BasicObservable<any>
 	} = {}
 	export let empty_row_factory: () => { [key: string] : any }
-	export let row_is_empty_predicate: (row: Row) => boolean
+	export let row_is_empty_predicate: (row: AnyRow) => boolean
 
 	$: grid_template_columns = columns.map(
 		({ initial_fraction = 1, width }) => width ? width : `${initial_fraction}fr`,
 	).join(` `)
 
 	let row_key = 0
-	const row_to_stores = (row: Row) => {
+	const row_to_stores = (row: AnyRow) => {
 		const value_stores = Object.fromEntries(
 			columns
 				.filter(({ computed }) => !computed)
 				.map(({ property }) => {
-					const value = property in row
+					const value = property && property in row
 						? warg_value(row[property])
 						: warg_value(null)
 
@@ -64,7 +63,7 @@
 
 		columns
 			.forEach(({ property, computed }) => {
-				if (computed) {
+				if (property && computed) {
 					object_of_stores[property] = warg_computed(object_of_stores, computed)
 				}
 			})
@@ -100,7 +99,7 @@
 	}
 
 	const clean_up_empty_rows_and_ensure_final_is_empty = () => {
-		type KeyAndStoreOfValues = { key: number, store_of_values: BasicObservable<Row> }
+		type KeyAndStoreOfValues = { key: number, store_of_values: BasicObservable<AnyRow> }
 		const should_be_removed = ({ key, store_of_values }: KeyAndStoreOfValues, index: number) => index !== row_stores.length - 1
 				&& key !== current_focused_row_key
 				&& row_is_empty_predicate(store_of_values.get())
@@ -177,14 +176,14 @@
 				>
 					<svelte:component
 						this={column.component}
-						store={object_of_stores[column.property]}
+						store={column.property && object_of_stores[column.property]}
 						bind:set_focus={focus_functions[`${key}-${column_index}`]}
 						on:focus={() => on_focus(key)}
 						on:blur={() => on_blur(key)}
 						on:column_event={({ detail: { event, ...rest } }) => dispatch(event, {
 							index: row_index,
 							row_key: key,
-							row_store: object_of_stores[column.property],
+							row_store: column.property && object_of_stores[column.property],
 							...rest,
 						})}
 						{...column.props}
