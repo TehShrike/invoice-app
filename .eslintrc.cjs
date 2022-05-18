@@ -37,8 +37,8 @@ module.exports = {
 				'@typescript-eslint/no-misused-promises': error,
 				'import/extensions': 0,
 				'@typescript-eslint/semi': never,
-				'@typescript/no-unused-vars': [ `warn`, { args: `after-used`, argsIgnorePattern: `^_` }],
-				'@typescript/comma-dangle': [ `warn`, `always-multiline` ]
+				'@typescript-eslint/no-unused-vars': [ `warn`, { args: `after-used`, argsIgnorePattern: `^_` }],
+				'@typescript-eslint/comma-dangle': [ `warn`, `always-multiline` ]
 			},
 		},
 	],
