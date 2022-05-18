@@ -11,6 +11,11 @@
 	import ListInput from 'shared/list-input/ListInput.svelte'
 	import type { Column, AnyRow } from 'shared/list-input/ListInput.svelte'
 
+	import Card from 'shared/Card.svelte'
+	import Label from 'shared/Label.svelte'
+
+	import { js_date_to_iso_date_string } from 'shared/date'
+
 	type Row = {
 		description: string,
 		quantity: FinancialNumber,
@@ -68,10 +73,65 @@
 
 	const columns_type_cast = columns as Column<AnyRow>[]
 	const row_is_empty_predicate_type_cast = row_is_empty_predicate as (row: AnyRow) => boolean
+
+	let bill_to = {
+		name: ``,
+	}
+	let invoice_number = 1001
+	let invoice_date = js_date_to_iso_date_string(new Date())
 </script>
+
+<!--
+Your company name/email/phone/address
+
+"Bill to" company name
+- email/phone/address
+
+Invoice number
+Invoice date
+
+Lineitems
+
+if taxed: Subtotal
+Total
+
+Paid?
+Amount due?
+-->
+<div class="document_grid">
+	<span style="max-width: 250px">
+		<h3>Bill to</h3>
+		<Label>
+			Name
+			<input type="text" bind:value={bill_to.name}>
+		</Label>
+	</span>
+
+	<span>
+		<Label>
+			Invoice #
+			<input type="number" bind:value={invoice_number}>
+		</Label>
+		<Label>
+			Date
+			<input type="date" bind:value={invoice_date}>
+		</Label>
+	</span>
+</div>
 
 <ListInput
 	columns={columns_type_cast}
 	{empty_row_factory}
 	row_is_empty_predicate={row_is_empty_predicate_type_cast}
 />
+
+<style>
+	.document_grid {
+		display: grid;
+		grid-template-columns: 1fr  240px;
+	}
+
+	h3 {
+		border-bottom: solid var(--light_blue) 1px;
+	}
+</style>
