@@ -202,8 +202,6 @@
 		--input-text-color: var(--black);
 		--mid-gray: #888787;
 		--cell-outline-color: var(--black);
-		--focus-border-color: var(--light_blue);
-		--focus-background-color: var(--beige);
 	}
 
 	[role=row] {

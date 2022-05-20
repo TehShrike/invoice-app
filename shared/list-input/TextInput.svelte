@@ -1,6 +1,6 @@
 <script lang=ts>
 	import type { Writable } from 'svelte/store'
-	import InputStyle from './InputStyle.svelte'
+	import ListInputStyle from './ListInputStyle.svelte'
 
 	export let disabled = false
 
@@ -16,7 +16,7 @@
 	}
 </script>
 
-<InputStyle>
+<ListInputStyle>
 	<input
 		type=text
 		bind:value={$store}
@@ -26,4 +26,4 @@
 		on:focus={on_focus}
 		on:blur
 	/>
-</InputStyle>
+</ListInputStyle>

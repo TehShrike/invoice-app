@@ -3,7 +3,6 @@
 	import type { FinancialNumber } from 'financial-number'
 
 	import NumberInput from 'shared/list-input/NumberInput.svelte'
-	import Checkbox from 'shared/list-input/Checkbox.svelte'
 	import NumberDisplay from 'shared/list-input/NumberDisplay.svelte'
 	import TextArea from 'shared/list-input/TextArea.svelte'
 	import DeleteButton from 'shared/list-input/DeleteButton.svelte'
@@ -11,10 +10,12 @@
 	import ListInput from 'shared/list-input/ListInput.svelte'
 	import type { Column, AnyRow } from 'shared/list-input/ListInput.svelte'
 
+	import InputStyle from 'shared/InputStyle.svelte'
 	import Card from 'shared/Card.svelte'
 	import Label from 'shared/Label.svelte'
 
 	import { js_date_to_iso_date_string } from 'shared/date'
+import Checkbox from 'shared/list-input/Checkbox.svelte'
 
 	type Row = {
 		description: string,
@@ -100,21 +101,27 @@ Amount due?
 -->
 <div class="document_grid">
 	<span style="max-width: 250px">
-		<h3>Bill to</h3>
+		<h3 class=accent-bottom>Bill to</h3>
 		<Label>
 			Name
-			<input type="text" bind:value={bill_to.name}>
+			<InputStyle>
+				<input type="text" bind:value={bill_to.name}>
+			</InputStyle>
 		</Label>
 	</span>
 
 	<span>
 		<Label>
 			Invoice #
-			<input type="number" bind:value={invoice_number}>
+			<InputStyle>
+				<input type="number" bind:value={invoice_number}>
+			</InputStyle>
 		</Label>
 		<Label>
 			Date
-			<input type="date" bind:value={invoice_date}>
+			<InputStyle>
+				<input type="date" bind:value={invoice_date}>
+			</InputStyle>
 		</Label>
 	</span>
 </div>
@@ -131,7 +138,7 @@ Amount due?
 		grid-template-columns: 1fr  240px;
 	}
 
-	h3 {
-		border-bottom: solid var(--light_blue) 1px;
+	.accent-bottom {
+		border-bottom: solid var(--light_blue) 2px;
 	}
 </style>

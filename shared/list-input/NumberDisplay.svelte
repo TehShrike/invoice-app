@@ -1,18 +1,18 @@
 <script lang=ts>
 	import type { Writable } from 'svelte/store'
-	import InputStyle from './InputStyle.svelte'
+	import ListInputStyle from './ListInputStyle.svelte'
 	import type { FinancialNumber } from 'financial-number'
 
 	export let store: Writable<FinancialNumber>
 </script>
 
-<InputStyle>
+<ListInputStyle>
 	<div class="input-style handles-own-background">
 		{#if $store !== null}
 			{$store.toString()}
 		{/if}
 	</div>
-</InputStyle>
+</ListInputStyle>
 
 <style>
 	div {

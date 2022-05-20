@@ -1,6 +1,6 @@
 <script lang=ts>
 	import type { Writable } from 'svelte/store'
-	import InputStyle from './InputStyle.svelte'
+	import ListInputStyle from './ListInputStyle.svelte'
 
 	export let disabled = false
 
@@ -21,7 +21,7 @@
 	}
 </script>
 
-<InputStyle>
+<ListInputStyle>
 	<div 
 		class="grow-wrap"
 		data-replicated-value={$store}
@@ -38,7 +38,7 @@
 			on:keypress={on_keypress}
 		/>		
 	</div>
-</InputStyle>
+</ListInputStyle>
 
 <style>
 	/* cribbed from https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/ */

@@ -18,6 +18,9 @@
 	--white: rgb(var(--white_rbg));
 
 	--base-content-gap: 8px;
+	--input-outline-color: var(--black);
+	--focus-border-color: var(--light_blue);
+	--focus-background-color: var(--beige);
 }
 
 html, body {

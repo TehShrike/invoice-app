@@ -3,7 +3,7 @@
 	import number from 'financial-number'
 	import type { FinancialNumber } from 'financial-number'
 
-	import InputStyle from './InputStyle.svelte'
+	import ListInputStyle from './ListInputStyle.svelte'
 
 	export let min = 0
 	export let max: number | null = null
@@ -64,7 +64,7 @@
 	}
 </script>
 
-<InputStyle>
+<ListInputStyle>
 	<input
 		type="number"
 		min={min}
@@ -79,7 +79,7 @@
 		on:blur
 		{...$$restProps}
 	/>
-</InputStyle>
+</ListInputStyle>
 
 <style>
 	input {
