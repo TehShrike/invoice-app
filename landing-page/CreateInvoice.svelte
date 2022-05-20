@@ -120,7 +120,7 @@ Amount due?
 		<Label>
 			Date
 			<InputStyle>
-				<input type="date" bind:value={invoice_date}>
+				<input type="date" bind:value={invoice_date} style="font-family: sans-serif;">
 			</InputStyle>
 		</Label>
 	</span>
