@@ -10,12 +10,11 @@
 	import ListInput from 'shared/list-input/ListInput.svelte'
 	import type { Column, AnyRow } from 'shared/list-input/ListInput.svelte'
 
-	import InputStyle from 'shared/InputStyle.svelte'
-	import Card from 'shared/Card.svelte'
+	import BillToInputs from 'shared/BillToInputs.svelte'
+	import type { Details } from 'shared/BillToInputs.svelte'
 	import Label from 'shared/Label.svelte'
-
+	import InputStyle from 'shared/InputStyle.svelte'
 	import { js_date_to_iso_date_string } from 'shared/date'
-import Checkbox from 'shared/list-input/Checkbox.svelte'
 
 	type Row = {
 		description: string,
@@ -80,6 +79,8 @@ import Checkbox from 'shared/list-input/Checkbox.svelte'
 	}
 	let invoice_number = 1001
 	let invoice_date = js_date_to_iso_date_string(new Date())
+
+	let bill_to_details: Details = []
 </script>
 
 <!--
@@ -102,12 +103,7 @@ Amount due?
 <div class="document_grid">
 	<span style="max-width: 250px">
 		<h3 class=accent-bottom>Bill to</h3>
-		<Label>
-			Name
-			<InputStyle>
-				<input type="text" bind:value={bill_to.name}>
-			</InputStyle>
-		</Label>
+		<BillToInputs bind:details={bill_to_details} />
 	</span>
 
 	<span>
