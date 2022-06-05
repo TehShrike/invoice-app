@@ -17,12 +17,20 @@
 	export let allowed_types: InputTypes[] = [ `email`, `phone`, `address` ]
 	export let current_type: InputTypes | null = null
 	export let value = ``
+	export let element: HTMLInputElement | null = null
+
+	let allowed_types_set = new Set(allowed_types)
+
+	$: if (
+		allowed_types.length !== allowed_types_set.size
+		|| allowed_types.some(type => !allowed_types_set.has(type))
+	) {
+		allowed_types_set = new Set(allowed_types)
+	}
 
 	$: label = current_type
 		? type_names[current_type]
 		: allowed_types.map(type => type_names[type]).join(`/`)
-
-	$: console.log({ allowed_types, current_type, value, label })
 
 	const email_regex = /[^ ]+@[^ ]+\.[^ ]+/
 	const is_email = (value: string) => email_regex.test(value)
@@ -30,7 +38,7 @@
 	const phone_regex = /[\d\s\-.()+]{7,}/
 	const is_phone = (value: string) => phone_regex.test(value)
 
-	const on_blur = () => {
+	const assign_current_type = () => {
 		if (is_email(value)) {
 			current_type = `email`
 		} else if (is_phone(value)) {
@@ -40,13 +48,28 @@
 		} else {
 			current_type = null
 		}
+
+		if (current_type && !allowed_types_set.has(current_type)) {
+			current_type = null
+		}
+
+		if (allowed_types.length === 1 && !current_type) {
+			current_type = allowed_types[0]
+		}
 	}
+
+	$: allowed_types_set && assign_current_type()
 </script>
 
 <Label>
 	{label}
 	<InputStyle>
-		<input type="text" bind:value on:blur={on_blur}>
+		<input
+			type="text"
+			bind:value
+			on:blur={assign_current_type}
+			bind:this={element}
+		>
 	</InputStyle>
 </Label>
 

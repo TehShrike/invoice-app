@@ -103,7 +103,7 @@ Amount due?
 <div class="document_grid">
 	<span style="max-width: 250px">
 		<h3 class=accent-bottom>Bill to</h3>
-		<BillToInputs bind:details={bill_to_details} />
+		<BillToInputs bind:current_details={bill_to_details} />
 	</span>
 
 	<span>
