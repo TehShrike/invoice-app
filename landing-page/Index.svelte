@@ -21,3 +21,10 @@
 		<CreateInvoice />
 	</Card>
 </Column>
+
+<style>
+	:root {
+		--input-text-color: var(--black);
+		--mid-gray: #888787;
+	}
+</style>

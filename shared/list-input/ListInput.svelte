@@ -199,8 +199,6 @@
 		display: grid;
 		gap: 1px;
 
-		--input-text-color: var(--black);
-		--mid-gray: #888787;
 		--cell-outline-color: var(--black);
 	}
 
