@@ -5,4 +5,11 @@
 
 # Todo
 
-- don't display the "delete line item" button for the new/empty row at the bottom
+- add "name" field under "bill to"
+- add your name/address to the top left
+- start laying out printable invoice down below
+- "quote" mode – what does it need to do besides saying "quote" as opposed to "invoice"?
+- other invoice fields – due date, etc
+- images
+	- upload images for line items
+	- figure out how to lay out images in printable pdf
