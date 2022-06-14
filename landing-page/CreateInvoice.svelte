@@ -54,11 +54,13 @@
 		component: NumberDisplay,
 		initial_fraction: 2.5,
 		header_text_align: `right`,
-		computed: ({ quantity, price }: { quantity: FinancialNumber, price: FinancialNumber }) => quantity.times(price).changePrecision(2),
+		computed: ({ quantity, price }) => quantity.times(price).changePrecision(2),
 	}, {
 		name: ``,
+		property: `can_delete`,
 		component: DeleteButton,
 		width: `24px`,
+		computed: row => !row_is_empty_predicate(row)
 	}]
 
 	const empty_row_factory = () => ({

@@ -190,6 +190,7 @@
 	{#each row_stores as { object_of_stores, key }, row_index (key)}
 		<div style="grid-template-columns: {grid_template_columns};" role=row>
 			{#each columns as column, column_index}
+				{@const row_store = column.property && object_of_stores[column.property]}
 				<div 
 					role=cell 
 					on:keypress={event => on_keypress(event, key, column_index)}
@@ -197,14 +198,14 @@
 				>
 					<svelte:component
 						this={column.component}
-						store={column.property && object_of_stores[column.property]}
+						store={row_store}
 						bind:set_focus={focus_functions[`${key}-${column_index}`]}
 						on:focus={() => on_focus(key)}
 						on:blur={() => on_blur(key)}
 						on:column_event={({ detail: { event, ...rest } }) => dispatch_column_event(event, {
 							index: row_index,
 							row_key: key,
-							row_store: column.property && object_of_stores[column.property],
+							row_store,
 						}, rest)}
 						{...column.props}
 					/>

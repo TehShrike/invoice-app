@@ -1,7 +1,12 @@
 <script lang=ts>
 	import { createEventDispatcher } from 'svelte'
+	import type { Writable } from 'svelte/store'
+
+	import FAxmark from 'shared/icon/FAxmark.svelte'
 
 	const dispatch = createEventDispatcher()
+
+	export let store: Writable<boolean>
 
 	let input_element: HTMLButtonElement
 
@@ -28,8 +33,9 @@
 		on:focus
 		on:blur
 		on:keypress={on_keypress}
+		disabled={!$store}
 	>
-		❌
+		<FAxmark />
 	</button>
 </div>
 
@@ -50,5 +56,13 @@
 		border: none;
 		background: transparent;
 		outline: none;
+	}
+
+	button :global(svg) {
+		fill: var(--red);
+	}
+
+	button[disabled] :global(svg) {
+		fill: var(--beige);
 	}
 </style>
