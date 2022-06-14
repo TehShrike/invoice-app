@@ -8,14 +8,14 @@
 </script>
 
 <script lang=ts>
-	import BillToInput from 'shared/BillToInput.svelte'
-	import type { InputTypes } from 'shared/BillToInput.svelte'
+	import ContactInput from 'shared/ContactInput.svelte'
+	import type { InputTypes } from 'shared/ContactInput.svelte'
 
 	export let current_details: Details = []
 
 	type DisplayDetail = Omit<Detail, `current_type`> & {
 		current_type: InputTypes | null,
-		element: HTMLInputElement | null,
+		element: HTMLTextAreaElement | null,
 		identity: number
 	}
 
@@ -82,7 +82,7 @@
 </script>
 
 {#each display_details as detail, index (detail.identity)}
-	<BillToInput
+	<ContactInput
 		allowed_types={get_allowed_types(display_details.slice(0, index))}
 		bind:current_type={detail.current_type}
 		bind:value={detail.value}

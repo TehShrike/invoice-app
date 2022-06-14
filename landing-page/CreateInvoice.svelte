@@ -8,10 +8,10 @@
 	import DeleteButton from 'shared/list-input/DeleteButton.svelte'
 
 	import ListInput from 'shared/list-input/ListInput.svelte'
-	import type { Column, AnyRow, ColumnEvent } from 'shared/list-input/ListInput.svelte'
+	import type { Column, AnyRow, RowStore, ColumnEvent } from 'shared/list-input/ListInput.svelte'
 
-	import BillToInputs from 'shared/BillToInputs.svelte'
-	import type { Details as BillTo } from 'shared/BillToInputs.svelte'
+	import ContactInputs from 'shared/ContactInputs.svelte'
+	import type { Details as BillTo } from 'shared/ContactInputs.svelte'
 	import Label from 'shared/Label.svelte'
 	import InputStyle from 'shared/InputStyle.svelte'
 	import { js_date_to_iso_date_string } from 'shared/date'
@@ -77,7 +77,7 @@
 
 	const row_is_empty_predicate_type_cast = row_is_empty_predicate as (row: AnyRow) => boolean
 
-	let row_stores: Row[] = []
+	let row_stores: RowStore[] = []
 
 	let invoice_number = 1001
 	let invoice_date = js_date_to_iso_date_string(new Date())
@@ -109,7 +109,7 @@ Amount due?
 <div class="document_grid">
 	<span style="max-width: 250px">
 		<h3 class=accent-bottom>Bill to</h3>
-		<BillToInputs bind:current_details={bill_to_details} />
+		<ContactInputs bind:current_details={bill_to_details} />
 	</span>
 
 	<span>

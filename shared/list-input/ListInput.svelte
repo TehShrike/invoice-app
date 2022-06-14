@@ -18,18 +18,20 @@
 		}
 	}
 
+	export type RowStore ={
+		object_of_stores: {
+			[key: string]: WargObservable<any>
+		},
+		store_of_values: WargObservable<{
+			[key: string]: any
+		}>,
+		key: number
+	}
+
 	export type ColumnEvent = {
 		index: number,
 		row_key: number,
-		row_store: {
-			object_of_stores: {
-				[key: string]: WargObservable<any>
-			},
-			store_of_values: WargObservable<{
-				[key: string]: any
-			}>,
-			key: number
-		}
+		row_store: RowStore
 	}
 </script>
 
