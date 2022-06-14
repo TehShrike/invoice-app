@@ -8,10 +8,10 @@
 	import DeleteButton from 'shared/list-input/DeleteButton.svelte'
 
 	import ListInput from 'shared/list-input/ListInput.svelte'
-	import type { Column, AnyRow } from 'shared/list-input/ListInput.svelte'
+	import type { Column, AnyRow, ColumnEvent } from 'shared/list-input/ListInput.svelte'
 
 	import BillToInputs from 'shared/BillToInputs.svelte'
-	import type { Details } from 'shared/BillToInputs.svelte'
+	import type { Details as BillTo } from 'shared/BillToInputs.svelte'
 	import Label from 'shared/Label.svelte'
 	import InputStyle from 'shared/InputStyle.svelte'
 	import { js_date_to_iso_date_string } from 'shared/date'
@@ -72,15 +72,19 @@
 		&& row.price.equal(`0.00`)
 
 	const columns_type_cast = columns as Column<AnyRow>[]
+
 	const row_is_empty_predicate_type_cast = row_is_empty_predicate as (row: AnyRow) => boolean
 
-	let bill_to = {
-		name: ``,
-	}
+	let row_stores: Row[] = []
+
 	let invoice_number = 1001
 	let invoice_date = js_date_to_iso_date_string(new Date())
 
-	let bill_to_details: Details = []
+	let bill_to_details: BillTo = []
+
+	const on_delete = ({ detail: { index: index_to_delete } }: { detail: ColumnEvent }) => {
+		row_stores = row_stores.filter((_, index) => index !== index_to_delete)
+	}
 </script>
 
 <!--
@@ -124,8 +128,10 @@ Amount due?
 
 <ListInput
 	columns={columns_type_cast}
+	bind:row_stores
 	{empty_row_factory}
 	row_is_empty_predicate={row_is_empty_predicate_type_cast}
+	on:delete={on_delete}
 />
 
 <style>

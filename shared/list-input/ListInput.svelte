@@ -17,11 +17,25 @@
 			[key: string]: any
 		}
 	}
+
+	export type ColumnEvent = {
+		index: number,
+		row_key: number,
+		row_store: {
+			object_of_stores: {
+				[key: string]: WargObservable<any>
+			},
+			store_of_values: WargObservable<{
+				[key: string]: any
+			}>,
+			key: number
+		}
+	}
 </script>
 
 <script lang=ts>
 	import { createEventDispatcher } from 'svelte'
-	import type { BasicObservable } from 'warg'
+	import type { BasicObservable, WargObservable } from 'warg'
 
 	import { computed as warg_computed, value as warg_value } from 'warg'
 
@@ -155,6 +169,13 @@
 		}
 		setTimeout(clean_up_empty_rows_and_ensure_final_is_empty, 0)
 	}
+
+	const dispatch_column_event = (event_name: string, column_information: ColumnEvent, event_details = {}) => {
+		dispatch(event_name, {
+			...column_information,
+			...event_details,
+		})
+	}
 </script>
 
 <div role=table>
@@ -180,12 +201,11 @@
 						bind:set_focus={focus_functions[`${key}-${column_index}`]}
 						on:focus={() => on_focus(key)}
 						on:blur={() => on_blur(key)}
-						on:column_event={({ detail: { event, ...rest } }) => dispatch(event, {
+						on:column_event={({ detail: { event, ...rest } }) => dispatch_column_event(event, {
 							index: row_index,
 							row_key: key,
 							row_store: column.property && object_of_stores[column.property],
-							...rest,
-						})}
+						}, rest)}
 						{...column.props}
 					/>
 				</div>
