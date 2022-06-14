@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ContactInputs from 'shared/ContactInputs.svelte'
-	import type { Details as BillTo } from 'shared/ContactInputs.svelte'
+	import type { Details as ContactDetails } from 'shared/ContactInputs.svelte'
 	import Label from 'shared/Label.svelte'
 	import InputStyle from 'shared/InputStyle.svelte'
 	import { js_date_to_iso_date_string } from 'shared/date'
@@ -13,10 +13,19 @@
 
 	export let row_stores: RowStore[] = []
 
-	let bill_to_details: BillTo = []
+	let bill_to_details: ContactDetails = []
+
+	let seller_details: ContactDetails = []
 </script>
 
 <div class="document_grid">
+	<span style="max-width: 250px">
+		<h3 class=accent-bottom>Seller</h3>
+		<ContactInputs bind:current_details={seller_details} />
+	</span>
+
+	<span></span>
+
 	<span style="max-width: 250px">
 		<h3 class=accent-bottom>Bill to</h3>
 		<ContactInputs bind:current_details={bill_to_details} />
@@ -44,6 +53,7 @@
 	.document_grid {
 		display: grid;
 		grid-template-columns: 1fr  240px;
+		gap: 16px;
 	}
 
 	.accent-bottom {
