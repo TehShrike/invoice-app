@@ -1,27 +1,25 @@
-<script>
-	import NumberInput from './inputs/NumberInput.svelte'
-	import Checkbox from './inputs/Checkbox.svelte'
-	import NumberDisplay from './inputs/NumberDisplay.svelte'
-	import TextArea from './inputs/TextArea.svelte'
-	import DeleteButton from './inputs/DeleteButton.svelte'
-
-	import ListInput from './ListInput.svelte'
-
+<script lang="ts">
 	import number from 'financial-number'
-	import { value } from 'warg'
+	import type { FinancialNumber } from 'financial-number'
 
-	const zero = number(`0`)
+	import NumberInput from 'shared/list-input/NumberInput.svelte'
+	import NumberDisplay from 'shared/list-input/NumberDisplay.svelte'
+	import TextArea from 'shared/list-input/TextArea.svelte'
+	import DeleteButton from 'shared/list-input/DeleteButton.svelte'
 
-	const external_stores = {
-		tax_rate: value(number(`0.075`)),
+	import ListInput from 'shared/list-input/ListInput.svelte'
+	import type { Column, AnyRow, RowStore, ColumnEvent } from 'shared/list-input/ListInput.svelte'
+
+	export let row_stores: RowStore[] = []
+
+	type Row = {
+		description: string,
+		quantity: FinancialNumber,
+		price: FinancialNumber,
+		total: FinancialNumber
 	}
 
-	const columns = [{
-		name: `Taxable`,
-		property: `taxable`,
-		component: Checkbox,
-		initial_fraction: 1,
-	}, {
+	const columns: Column<Row>[] = [{
 		name: `Description`,
 		property: `description`,
 		component: TextArea,
@@ -47,101 +45,47 @@
 			precision: 2,
 		},
 	}, {
-		name: `Tax`,
-		property: `tax`,
-		component: NumberDisplay,
-		initial_fraction: 2,
-		header_text_align: `right`,
-		computed: ({ taxable, quantity, price, tax_rate }) => (taxable
-			? quantity.times(price).times(tax_rate)
-			: zero
-		).changePrecision(2),
-	}, {
-		name: `Total`,
+		name: `Line Total`,
 		property: `total`,
 		component: NumberDisplay,
 		initial_fraction: 2.5,
 		header_text_align: `right`,
-		computed: ({ quantity, price, tax }) => quantity.times(price).plus(tax).changePrecision(2),
+		computed: ({ quantity, price }) => quantity.times(price).changePrecision(2),
 	}, {
 		name: ``,
+		property: `can_delete`,
 		component: DeleteButton,
 		width: `24px`,
+		computed: row => !row_is_empty_predicate(row)
 	}]
 
 	const empty_row_factory = () => ({
 		quantity: number(`1`),
 		description: ``,
-		taxable: true,
 		price: number(`0.00`),
 	})
 
-	const row_is_empty_predicate = row => row.quantity.equal(`1`)
+	const row_is_empty_predicate = (row: ReturnType<typeof empty_row_factory>) => row.quantity.equal(`1`)
 		&& row.description === ``
-		&& row.taxable === true
 		&& row.price.equal(`0.00`)
 
-	let items = [{
-		quantity: number(`2`),
-		description: `Pants.  This is a line that will grow.  How much will it grow?  Well, potentially quite a bit.`,
-		taxable: true,
-		price: number(`20000.01`),
-	}, {
-		quantity: number(`1`),
-		description: `Sock`,
-		taxable: true,
-		price: number(`3.99`),
-	}, {
-		quantity: number(`1`),
-		description: `Chocolate bar`,
-		taxable: false,
-		price: number(`1.29`),
-	}]
+	const columns_type_cast = columns as Column<AnyRow>[]
 
-	$: total_calculated_from_rows = items.reduce(
-		(invoice_total, { total }) => invoice_total.plus(total ? total : zero), zero,
-	)
+	const row_is_empty_predicate_type_cast = row_is_empty_predicate as (row: AnyRow) => boolean
 
-	let row_stores
-
-	const on_delete = ({ detail: { index: index_to_delete } }) => {
+	const on_delete = ({ detail: { index: index_to_delete } }: { detail: ColumnEvent }) => {
 		row_stores = row_stores.filter((_, index) => index !== index_to_delete)
 	}
 </script>
 
-<div class="container">
-	<label>
-		Tax rate
-		<NumberInput
-			bind:store={external_stores.tax_rate}
-			precision={3}
-			min={0}
-			style="max-width: 200px; border: 1px solid black"
-		/>
-	</label>
-
-	<ListInput
-		{columns}
-		bind:rows={items}
-		bind:row_stores
-		{external_stores}
-		{empty_row_factory}
-		{row_is_empty_predicate}
-		on:delete={on_delete}
-	/>
-
-	<div style="display: flex; justify-content: flex-end; gap: 8px;">
-		<strong>Calculated total:</strong>
-		<output>{total_calculated_from_rows.toString()}</output>
-	</div>
-</div>
-
+<ListInput
+	columns={columns_type_cast}
+	bind:row_stores
+	{empty_row_factory}
+	row_is_empty_predicate={row_is_empty_predicate_type_cast}
+	on:delete={on_delete}
+/>
 
 
 <style>
-	.container {
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
 </style>

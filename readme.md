@@ -9,7 +9,8 @@
 - add your name/address to the top left
 - start laying out printable invoice down below
 - "quote" mode – what does it need to do besides saying "quote" as opposed to "invoice"?
-- other invoice fields – due date, etc
+- other invoice metadata fields – due date, etc
+- tax
 - discount
 - images
 	- upload images for line items
