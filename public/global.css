@@ -17,10 +17,11 @@
 	--white_rbg: 255,255,248;
 	--white: rgb(var(--white_rbg));
 
-	--base-content-gap: 8px;
-	--input-outline-color: var(--black);
-	--focus-border-color: var(--blue);
-	--focus-background-color: var(--beige);
+	--base_content_gap: 8px;
+	--element_spacing_gap: 16px;
+	--input_outline_color: var(--black);
+	--focus_border_color: var(--blue);
+	--focus_background_color: var(--beige);
 }
 
 html, body {

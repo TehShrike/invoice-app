@@ -247,9 +247,9 @@
 
 	[role=cell]:focus-within {
 		border-radius: 3px;
-		-webkit-box-shadow: 0 0 0 3px var(--focus-border-color);
-		box-shadow: 0 0 0 3px var(--focus-border-color);
-		outline-color: var(--focus-border-color);
+		-webkit-box-shadow: 0 0 0 3px var(--focus_border_color);
+		box-shadow: 0 0 0 3px var(--focus_border_color);
+		outline-color: var(--focus_border_color);
 		z-index: 1;
 	}
 

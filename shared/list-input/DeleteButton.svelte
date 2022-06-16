@@ -49,7 +49,7 @@
 	}
 
 	.button-wrapper:focus-within {
-		background-color: var(--focus-background-color);
+		background-color: var(--focus_background_color);
 	}
 
 	button {

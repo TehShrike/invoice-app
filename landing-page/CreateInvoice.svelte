@@ -7,7 +7,6 @@
 
 	import LineItems from './LineItems.svelte'
 	import type { RowStore } from 'shared/list-input/ListInput.svelte'
-	import Card from 'shared/Card.svelte'
 	import BorderedSection from 'shared/BorderedSection.svelte'
 
 	let invoice_number = 1001
@@ -22,57 +21,64 @@
 	let seller_details: ContactDetails = []
 </script>
 
-<div class="document_grid">
-	<BorderedSection>
-		<h3 class=accent-bottom>Your information</h3>
-		<Label>
-			Your name or company
-			<InputStyle>
-				<input type="text" bind:value={seller_name}>
-			</InputStyle>
-		</Label>
-		<ContactInputs bind:current_details={seller_details} />
-	</BorderedSection>
+<div class="container_column">
+	<div class="document_grid">
+		<BorderedSection>
+			<h3 class=accent-bottom>Your information</h3>
+			<Label>
+				Your name or company
+				<InputStyle>
+					<input type="text" bind:value={seller_name}>
+				</InputStyle>
+			</Label>
+			<ContactInputs bind:current_details={seller_details} />
+		</BorderedSection>
 
-	<span></span>
+		<span></span>
 
-	<BorderedSection>
-		<h3 class=accent-bottom>Bill to</h3>
-		<Label>
-			Name or company
-			<InputStyle>
-				<input type="text" bind:value={bill_to_name}>
-			</InputStyle>
-		</Label>
-		<ContactInputs bind:current_details={bill_to_details} />
-	</BorderedSection>
+		<BorderedSection>
+			<h3 class=accent-bottom>Bill to</h3>
+			<Label>
+				Name or company
+				<InputStyle>
+					<input type="text" bind:value={bill_to_name}>
+				</InputStyle>
+			</Label>
+			<ContactInputs bind:current_details={bill_to_details} />
+		</BorderedSection>
 
-	<BorderedSection>
-		<Label>
-			Invoice #
-			<InputStyle>
-				<input type="number" bind:value={invoice_number}>
-			</InputStyle>
-		</Label>
-		<Label>
-			Date
-			<InputStyle>
-				<input type="date" bind:value={invoice_date} style="font-family: sans-serif;">
-			</InputStyle>
-		</Label>
-	</BorderedSection>
+		<BorderedSection>
+			<Label>
+				Invoice #
+				<InputStyle>
+					<input type="number" bind:value={invoice_number}>
+				</InputStyle>
+			</Label>
+			<Label>
+				Date
+				<InputStyle>
+					<input type="date" bind:value={invoice_date} style="font-family: sans-serif;">
+				</InputStyle>
+			</Label>
+		</BorderedSection>
+	</div>
+
+	<LineItems bind:row_stores />
 </div>
 
-<LineItems bind:row_stores />
-
 <style>
+	.container_column {
+		display: flex;
+		flex-direction: column;
+		gap: var(--element_spacing_gap);
+	}
 	.document_grid {
 		--section_size: 400px;
 		display: grid;
 		justify-content: space-between;
 		grid-template-columns: var(--section_size) var(--section_size);
-		grid-auto-rows: 1fr;
-		gap: 16px;
+		grid-template-rows: 1fr;
+		gap: var(--element_spacing_gap);
 	}
 
 	.accent-bottom {

@@ -6,7 +6,7 @@
 	div {
 		display: flex;
 		flex-direction: column;
-		gap: var(--base-content-gap);
+		gap: var(--base_content_gap);
 		max-width: 700px;
 	}
 </style>
