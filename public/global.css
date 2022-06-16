@@ -6,8 +6,8 @@
 :root {
 	--black_rbg: 23,24,26;
 	--black: rgb(var(--black_rbg));
-	--light_blue_rbg: 116,160,215;
-	--light_blue: rgb(var(--light_blue_rbg));
+	--blue_rbg: 37, 77, 126;
+	--blue: rgb(var(--blue_rbg));
 	--red_rbg: 238,85,113;
 	--red: rgb(var(--red_rbg));
 	--beige_rbg: 234,206,180;
@@ -19,7 +19,7 @@
 
 	--base-content-gap: 8px;
 	--input-outline-color: var(--black);
-	--focus-border-color: var(--light_blue);
+	--focus-border-color: var(--blue);
 	--focus-background-color: var(--beige);
 }
 

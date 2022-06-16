@@ -5,8 +5,6 @@
 
 # Todo
 
-- add "name" field under "bill to"
-- add your name/address to the top left
 - start laying out printable invoice down below
 - "quote" mode – what does it need to do besides saying "quote" as opposed to "invoice"?
 - other invoice metadata fields – due date, etc
@@ -15,3 +13,4 @@
 - images
 	- upload images for line items
 	- figure out how to lay out images in printable pdf
+- remembering invoice details locally in the browser (small-indexeddb or localstorage)

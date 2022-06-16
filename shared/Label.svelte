@@ -7,5 +7,7 @@
 	label {
 		display: flex;
 		flex-direction: column;
+		color: var(--blue);
+		font-weight: 500;
 	}
 </style>
