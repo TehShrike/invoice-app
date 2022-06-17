@@ -5,20 +5,43 @@
 	import InputStyle from 'shared/InputStyle.svelte'
 	import { js_date_to_iso_date_string } from 'shared/date'
 
-	import LineItems from './LineItems.svelte'
 	import type { RowStore } from 'shared/list-input/ListInput.svelte'
 	import BorderedSection from 'shared/BorderedSection.svelte'
+
+	import LineItems from './LineItems.svelte'
+
+	import type { NameAndAddress } from './invoice_types'
 
 	let invoice_number = 1001
 	let invoice_date = js_date_to_iso_date_string(new Date())
 
 	export let row_stores: RowStore[] = []
+	export let bill_to: NameAndAddress
+	export let seller: NameAndAddress
 
 	let bill_to_name = ``
 	let bill_to_details: ContactDetails = []
 
 	let seller_name = ``
 	let seller_details: ContactDetails = []
+
+	$: bill_to = {
+		name: bill_to_name,
+		...details_to_object(bill_to_details)
+	}
+
+	$: seller = {
+		name: seller_name,
+		...details_to_object(seller_details)
+	}
+
+	const details_to_object = (contact_details: ContactDetails) => ({
+		address: null,
+		phone: null,
+		email: null,
+		...Object.fromEntries(contact_details.map(({ current_type, value }) => [ current_type, value ]))
+	})
+
 </script>
 
 <div class="container_column">

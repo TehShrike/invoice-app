@@ -1,6 +1,5 @@
 <script lang="ts">
 	import number from 'financial-number'
-	import type { FinancialNumber } from 'financial-number'
 
 	import NumberInput from 'shared/list-input/NumberInput.svelte'
 	import NumberDisplay from 'shared/list-input/NumberDisplay.svelte'
@@ -10,16 +9,11 @@
 	import ListInput from 'shared/list-input/ListInput.svelte'
 	import type { Column, AnyRow, RowStore, ColumnEvent } from 'shared/list-input/ListInput.svelte'
 
+	import type { LineItem } from './invoice_types'
+
 	export let row_stores: RowStore[] = []
 
-	type Row = {
-		description: string,
-		quantity: FinancialNumber,
-		price: FinancialNumber,
-		total: FinancialNumber
-	}
-
-	const columns: Column<Row>[] = [{
+	const columns: Column<LineItem>[] = [{
 		name: `Description`,
 		property: `description`,
 		component: TextArea,
@@ -85,7 +79,6 @@
 	row_is_empty_predicate={row_is_empty_predicate_type_cast}
 	on:delete={on_delete}
 />
-
 
 <style>
 </style>

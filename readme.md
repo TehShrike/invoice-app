@@ -5,6 +5,7 @@
 
 # Todo
 
+- get sourcemaps working
 - start laying out printable invoice down below
 - "quote" mode – what does it need to do besides saying "quote" as opposed to "invoice"?
 - other invoice metadata fields – due date, etc

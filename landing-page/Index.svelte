@@ -1,9 +1,22 @@
 <script lang="ts">
-	import CreateInvoice from './CreateInvoice.svelte'
 	import Card from 'shared/Card.svelte'
 	import Column from 'shared/Column.svelte'
 	import ContentWidth from 'shared/ContentWidth.svelte'
 
+	import CreateInvoice from './CreateInvoice.svelte'
+	import DisplayInvoice from './DisplayInvoice.svelte'
+
+	import type { RowStore } from 'shared/list-input/ListInput.svelte'
+
+	import type { NameAndAddress, LineItem } from './invoice_types'
+
+	let row_stores: RowStore[]
+	let bill_to: NameAndAddress
+	let seller: NameAndAddress
+
+	$: line_items = row_stores
+		? row_stores.map(row => row.store_of_values.get()) as LineItem[]
+		: []
 </script>
 
 <Column>
@@ -18,7 +31,24 @@
 	</ContentWidth>
 
 	<Card>
-		<CreateInvoice />
+		<CreateInvoice
+			bind:row_stores
+			bind:seller
+			bind:bill_to
+		/>
+	</Card>
+
+	<Card>
+		<h2>Printable invoice</h2>
+		{#if seller && bill_to && line_items}
+			<DisplayInvoice
+				invoice={{
+					seller,
+					bill_to,
+					line_items,
+				}}
+			/>
+		{/if}
 	</Card>
 </Column>
 
