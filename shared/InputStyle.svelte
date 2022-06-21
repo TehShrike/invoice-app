@@ -12,6 +12,7 @@
 		width: 100%;
 		font-size: 16px;
 
+		background-color: var(--white);
 		color: var(--input-text-color);
 	}
 

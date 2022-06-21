@@ -245,7 +245,7 @@
 
 	[role=cell], [role=columnheader] {
 		box-sizing: border-box;
-		background-color: var(--white);
+		background-color: var(--cream);
 
 		overflow: hidden;
 	}

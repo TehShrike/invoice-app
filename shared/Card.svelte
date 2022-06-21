@@ -4,7 +4,7 @@
 
 <style>
 	div {
-		background-color: var(--white);
+		background-color: var(--cream);
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
