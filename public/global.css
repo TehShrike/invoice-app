@@ -5,7 +5,9 @@
 
 :root {
 	--black_rbg: 23,24,26;
+	--black_hsl: 220;
 	--black: rgb(var(--black_rbg));
+	--dark: hsl(var(--black_hsl), 6.1%, 70%);
 	--blue_rbg: 37, 77, 126;
 	--blue: rgb(var(--blue_rbg));
 	--red_rbg: 238,85,113;

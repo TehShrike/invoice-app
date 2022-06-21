@@ -10,7 +10,7 @@
 		align-items: stretch;
 		padding: 16px;
 		gap: var(--base_content_gap);
-		border: 1px solid rgba(var(--black_rbg), 0.3);
+		border: 2px solid var(--dark);
 		border-radius: 4px;
 	}
 

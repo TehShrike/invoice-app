@@ -219,15 +219,20 @@
 
 <style>
 	[role=table] {
-		display: grid;
-		gap: 1px;
+		--cell-outline-color: var(--dark);
+		--outline-size: 2px;
 
-		--cell-outline-color: var(--black);
+		display: grid;
+		gap: var(--outline-size);
+		border-radius: 4px;
+
+		background-color: var(--cell-outline-color);
+		outline: var(--outline-size) solid var(--cell-outline-color);
 	}
 
 	[role=row] {
 		display: grid;
-		gap: 1px;
+		gap: var(--outline-size);
 	}
 
 	[role=columnheader] {
@@ -240,7 +245,7 @@
 
 	[role=cell], [role=columnheader] {
 		box-sizing: border-box;
-		outline: 1px solid var(--cell-outline-color);
+		background-color: var(--white);
 
 		overflow: hidden;
 	}
