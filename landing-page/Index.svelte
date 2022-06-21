@@ -9,14 +9,23 @@
 	import type { RowStore } from 'shared/list-input/ListInput.svelte'
 
 	import type { NameAndAddress, LineItem } from './invoice_types'
+	// import make_localstorage_store from './localstorage_store'
 
 	let row_stores: RowStore[]
 	let bill_to: NameAndAddress
 	let seller: NameAndAddress
 
+	// const invoice_store = make_localstorage_store('invoice', default invoice here)
+
 	$: line_items = row_stores
 		? row_stores.map(row => row.store_of_values.get()) as LineItem[]
 		: []
+
+	$: invoice = {
+		seller,
+		bill_to,
+		line_items,
+	}
 </script>
 
 <Column>
@@ -42,11 +51,7 @@
 		<h2>Printable invoice</h2>
 		{#if seller && bill_to && line_items}
 			<DisplayInvoice
-				invoice={{
-					seller,
-					bill_to,
-					line_items,
-				}}
+				{invoice}
 			/>
 		{/if}
 	</Card>
