@@ -126,6 +126,7 @@ Amount due?
 	columns={columns_type_cast}
 	{empty_row_factory}
 	row_is_empty_predicate={row_is_empty_predicate_type_cast}
+	on:delete={(...args) => console.log(`Need to delete this item`, ...args)}
 />
 
 <style>
