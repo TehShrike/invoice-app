@@ -14,7 +14,11 @@ export type LineItem = {
 	total: FinancialNumber,
 }
 
+type Iso8601Date = `${number}-${number}-${number}`
+
 export type Invoice = {
+	number: number,
+	invoice_date: Iso8601Date,
 	seller: NameAndAddress,
 	bill_to: NameAndAddress,
 	line_items: LineItem[],
