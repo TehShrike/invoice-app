@@ -27,7 +27,14 @@
 		identity: next_identity++
 	})
 
-	let display_details: DisplayDetail[] = [ make_empty_value() ]
+	let display_details: DisplayDetail[] = [
+		...current_details.map((detail): DisplayDetail => ({
+			identity: next_identity++,
+			element: null,
+			...detail
+		})),
+		make_empty_value()
+	]
 
 	const all_possible_types: InputTypes[] = [ `email`, `phone`, `address` ]
 

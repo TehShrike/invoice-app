@@ -1,29 +1,41 @@
 <script lang="ts">
 	import ContactInputs from 'shared/ContactInputs.svelte'
-	import type { Details as ContactDetails } from 'shared/ContactInputs.svelte'
+	import type { Detail as ContactDetail } from 'shared/ContactInputs.svelte'
+	import { is_valid_contact_type } from 'shared/ContactInput.svelte'
 	import Label from 'shared/Label.svelte'
 	import InputStyle from 'shared/InputStyle.svelte'
-	import { js_date_to_iso_date_string } from 'shared/date'
 
 	import type { RowStore } from 'shared/list-input/ListInput.svelte'
 	import BorderedSection from 'shared/BorderedSection.svelte'
 
 	import LineItems from './LineItems.svelte'
 
-	import type { NameAndAddress } from './invoice_types'
+	import type { NameAndAddress, Invoice } from './invoice_types'
 
-	let invoice_number = 1001
-	let invoice_date = js_date_to_iso_date_string(new Date())
+	export let initial_invoice_state: Invoice
+
+	export let invoice_number = initial_invoice_state.number
+	export let invoice_date = initial_invoice_state.invoice_date
 
 	export let row_stores: RowStore[] = []
 	export let bill_to: NameAndAddress
 	export let seller: NameAndAddress
 
-	let bill_to_name = ``
-	let bill_to_details: ContactDetails = []
+	const name_and_address_to_contact_detail = (name_and_address: NameAndAddress): ContactDetail[] => Object.entries(name_and_address)
+		.map(([ key, value ]) => {
+			if (is_valid_contact_type(key) && value) {
+				return { current_type: key, value }
+			}
 
-	let seller_name = ``
-	let seller_details: ContactDetails = []
+			return null
+		})
+		.filter((contact): contact is ContactDetail => contact !== null)
+
+	let bill_to_name = initial_invoice_state.bill_to.name
+	let bill_to_details: ContactDetail[] = name_and_address_to_contact_detail(initial_invoice_state.bill_to)
+
+	let seller_name = initial_invoice_state.seller.name
+	let seller_details: ContactDetail[] = name_and_address_to_contact_detail(initial_invoice_state.seller)
 
 	$: bill_to = {
 		name: bill_to_name,
@@ -35,7 +47,7 @@
 		...details_to_object(seller_details)
 	}
 
-	const details_to_object = (contact_details: ContactDetails) => ({
+	const details_to_object = (contact_details: ContactDetail[]) => ({
 		address: null,
 		phone: null,
 		email: null,

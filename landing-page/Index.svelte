@@ -9,9 +9,8 @@
 	import DisplayInvoice from './DisplayInvoice.svelte'
 
 	import type { RowStore } from 'shared/list-input/ListInput.svelte'
-	import { js_date_to_iso_date_string } from 'shared/date'
 
-	import type { NameAndAddress, Invoice, LineItem } from './invoice_types'
+	import type { NameAndAddress, Invoice, LineItem, Iso8601Date } from './invoice_types'
 	// import make_localstorage_store from './localstorage_store'
 
 	let row_stores: RowStore[]
@@ -22,7 +21,7 @@
 
 	const default_invoice: Invoice = {
 		number: 1001,
-		invoice_date: js_date_to_iso_date_string(new Date()),
+		invoice_date: `2022-06-22`,
 		seller: {
 			name: `Cool Person`,
 			email: `me@example.com`,
@@ -32,7 +31,7 @@
 		bill_to: {
 			name: ``,
 			address: null,
-			phone: null,
+			phone: `123-456-7890`,
 			email: null,
 		},
 		line_items: [{
@@ -47,7 +46,12 @@
 		? row_stores.map(row => row.store_of_values.get()) as LineItem[]
 		: []
 
+	let invoice_number: number
+	let invoice_date: Iso8601Date
+
 	$: invoice = {
+		number: invoice_number,
+		invoice_date,
 		seller,
 		bill_to,
 		line_items,
@@ -67,6 +71,9 @@
 
 	<Card>
 		<CreateInvoice
+			initial_invoice_state={default_invoice}
+			bind:invoice_number
+			bind:invoice_date
 			bind:row_stores
 			bind:seller
 			bind:bill_to

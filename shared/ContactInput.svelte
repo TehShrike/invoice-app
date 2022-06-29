@@ -3,11 +3,15 @@
 <script lang=ts context=module>
 	export type InputTypes = `email` | `phone` | `address`
 
-	const type_names = {
+	export const type_names: {
+		[key in InputTypes]: string
+	} = {
 		email: `Email`,
 		phone: `Phone`,
 		address: `Address`
 	}
+
+	export const is_valid_contact_type = (str: string): str is InputTypes => str in type_names
 </script>
 
 <script lang=ts>
