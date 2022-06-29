@@ -30,6 +30,8 @@ const execute = path => {
 		exec_sync(full_command, {
 			stdio: `inherit`,
 		})
+	} catch(err) {
+		console.error(err)
 	} finally {
 		executing.delete(path)
 		execute_finish_time.set(path, Date.now())
