@@ -13,7 +13,9 @@
     "serve": "live-server --no-css-inject --no-browser public",
     "build": "npm run prepare && node build.js",
     "watch": "npm run build && watchlist landing-page shared -- node build.js",
-    "dev": "run-p watch serve"
+    "autofix:landing-page": "node cheap_watch.cjs landing-page time npx eslint landing-page/~PATH~ --fix --cache",
+    "autofix:shared": "node cheap_watch.cjs shared time npx eslint shared/~PATH~ --fix --cache",
+    "dev": "run-p watch serve autofix:*"
   },
   "repository": {
     "type": "git",
