@@ -15,7 +15,8 @@
     "watch": "npm run build && watchlist landing-page shared -- node build.js",
     "autofix:landing-page": "node cheap_watch.cjs landing-page time npx eslint landing-page/~PATH~ --fix --cache",
     "autofix:shared": "node cheap_watch.cjs shared time npx eslint shared/~PATH~ --fix --cache",
-    "dev": "run-p watch serve autofix:*"
+    "dev": "run-p watch serve autofix:*",
+    "postinstall": "npm run prepare"
   },
   "repository": {
     "type": "git",
@@ -36,7 +37,7 @@
     "eslint-plugin-svelte3": "^3.4.1",
     "live-server": "^1.2.2",
     "npm-run-all": "^4.1.5",
-    "svelte-check": "^2.7.0",
+    "svelte-check": "^2.8.0",
     "watchlist": "^0.3.1"
   },
   "dependencies": {
