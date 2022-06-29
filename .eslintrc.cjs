@@ -9,8 +9,8 @@ module.exports = {
 	parser: `@typescript-eslint/parser`,
 	parserOptions: {
 		tsconfigRootDir: __dirname,
-		project: ['./tsconfig.json'],
-		extraFileExtensions: ['.svelte', '.cjs'],
+		project: [ `./tsconfig.json` ],
+		extraFileExtensions: [ `.svelte`, `.cjs` ],
 		ecmaVersion: 2021,
 		allowImportExportEverywhere: true,
 		sourceType: `module`,
@@ -25,6 +25,10 @@ module.exports = {
 				'import/no-unresolved': 0,
 				'import/no-absolute-path': 0,
 			},
+		},
+		{
+			files: [ `**/*.cjs`, `**/*.js` ],
+			parser: `espree`,
 		},
 		{
 			files: [ `**/*.ts`, `**/*.svelte` ],
