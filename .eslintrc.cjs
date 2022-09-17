@@ -10,7 +10,7 @@ module.exports = {
 	parserOptions: {
 		tsconfigRootDir: __dirname,
 		project: [ `./tsconfig.json` ],
-		extraFileExtensions: [ `.svelte`, `.cjs` ],
+		extraFileExtensions: [ `.svelte` ],
 		ecmaVersion: 2021,
 		allowImportExportEverywhere: true,
 		sourceType: `module`,
