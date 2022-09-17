@@ -5,9 +5,6 @@
 
 # Todo
 
-- save current information to localstorage
-	- now that `initial_invoice_state` is passed in from the outside, this is possible
-	- serialize the `invoice` variable in Index.svelte
 - start laying out printable invoice down below
 	- your information
 	- invoice metadata section

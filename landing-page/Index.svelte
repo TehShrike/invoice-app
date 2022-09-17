@@ -11,13 +11,11 @@
 	import type { RowStore } from 'shared/list-input/ListInput.svelte'
 
 	import type { NameAndAddress, Invoice, LineItem, Iso8601Date } from './invoice_types'
-	// import make_localstorage_store from './localstorage_store'
+	import make_localstorage_store from './localstorage_store'
 
 	let row_stores: RowStore[]
 	let bill_to: NameAndAddress
 	let seller: NameAndAddress
-
-	// const invoice_store = make_localstorage_store('invoice', default invoice here)
 
 	const default_invoice: Invoice = {
 		number: 1001,
@@ -42,6 +40,8 @@
 		}]
 	}
 
+	const invoice_store = make_localstorage_store(`invoice`, default_invoice)
+
 	$: line_items = row_stores
 		? row_stores.map(row => row.store_of_values.get()) as LineItem[]
 		: []
@@ -49,13 +49,25 @@
 	let invoice_number: number
 	let invoice_date: Iso8601Date
 
-	$: invoice = {
+	const update_invoice_store = ({ number, invoice_date, seller, bill_to, line_items }: Invoice) => {
+		if (seller && bill_to && line_items) {
+			$invoice_store = {
+				number,
+				invoice_date,
+				seller,
+				bill_to,
+				line_items,
+			}
+		}
+	}
+
+	$: update_invoice_store({
 		number: invoice_number,
 		invoice_date,
 		seller,
 		bill_to,
 		line_items,
-	}
+	})
 </script>
 
 <Column>
@@ -71,7 +83,7 @@
 
 	<Card>
 		<CreateInvoice
-			initial_invoice_state={default_invoice}
+			initial_invoice_state={$invoice_store}
 			bind:invoice_number
 			bind:invoice_date
 			bind:row_stores
@@ -84,7 +96,7 @@
 		<h2>Printable invoice</h2>
 		{#if seller && bill_to && line_items}
 			<DisplayInvoice
-				{invoice}
+				invoice={$invoice_store}
 			/>
 		{/if}
 	</Card>
