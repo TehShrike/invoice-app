@@ -2,8 +2,6 @@
 	import { createEventDispatcher } from 'svelte'
 	import type { Writable } from 'svelte/store'
 
-	import FAxmark from 'shared/icon/FAxmark.svelte'
-
 	const dispatch = createEventDispatcher()
 
 	export let store: Writable<boolean>
@@ -35,7 +33,7 @@
 		on:keypress={on_keypress}
 		disabled={!$store}
 	>
-		<FAxmark />
+		❌
 	</button>
 </div>
 
