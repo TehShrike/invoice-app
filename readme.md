@@ -1,3 +1,10 @@
+# How to run it
+
+```sh
+npm i
+npm run dev
+```
+
 # Top priorities
 
 - Visual legibility
