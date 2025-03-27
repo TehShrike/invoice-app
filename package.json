@@ -10,7 +10,7 @@
     "test:svelte": "svelte-check --compiler-warnings 'a11y-label-has-associated-control:ignore' --threshold=warning --workspace=.",
     "create_symlinks": "symlink shared node_modules/shared",
     "test": "run-p test:**",
-    "serve": "live-server --no-css-inject --no-browser public",
+    "serve": "dead-server --no-css-inject --no-browser public",
     "build": "npm run prepare && node build.js",
     "watch": "npm run build && watchlist landing-page shared -- node build.js",
     "autofix:landing-page": "node cheap_watch.cjs landing-page time npx eslint landing-page/~PATH~ --fix --cache",
@@ -35,7 +35,6 @@
     "eslint-plugin-html": "^6.2.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-svelte3": "^3.4.1",
-    "live-server": "^1.2.2",
     "npm-run-all": "^4.1.5",
     "svelte-check": "^2.8.0",
     "watchlist": "^0.3.1"
@@ -43,6 +42,7 @@
   "dependencies": {
     "@tsconfig/svelte": "^3.0.0",
     "cheap-watch": "^1.0.4",
+    "dead-server": "^1.0.9",
     "esbuild": "^0.14.38",
     "esbuild-svelte": "^0.7.0",
     "financial-number": "^4.0.2",
