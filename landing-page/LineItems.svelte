@@ -9,9 +9,13 @@
 	import ListInput from 'shared/list-input/ListInput.svelte'
 	import type { Column, AnyRow, RowStore, ColumnEvent } from 'shared/list-input/ListInput.svelte'
 
-	import type { LineItem } from './invoice_types'
+	import type { LineItem } from './invoice_types.ts'
 
-	export let row_stores: RowStore[] = []
+	let {
+		row_stores = $bindable<RowStore[]>([]),
+	}: {
+		row_stores?: RowStore[],
+	} = $props()
 
 	const columns: Column<LineItem>[] = [{
 		name: `Description`,
@@ -67,8 +71,8 @@
 
 	const row_is_empty_predicate_type_cast = row_is_empty_predicate as (row: AnyRow) => boolean
 
-	const on_delete = ({ detail: { index: index_to_delete } }: { detail: ColumnEvent }) => {
-		row_stores = row_stores.filter((_, index) => index !== index_to_delete)
+	const on_delete = (detail: ColumnEvent) => {
+		row_stores = row_stores.filter((_, index) => index !== detail.index)
 	}
 </script>
 
@@ -77,7 +81,7 @@
 	bind:row_stores
 	{empty_row_factory}
 	row_is_empty_predicate={row_is_empty_predicate_type_cast}
-	on:delete={on_delete}
+	ondelete={on_delete}
 />
 
 <style>

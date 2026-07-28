@@ -1,5 +1,10 @@
+<script lang="ts">
+	import type { Snippet } from 'svelte'
+	const { children }: { children: Snippet } = $props()
+</script>
+
 <div>
-	<slot></slot>
+	{@render children()}
 </div>
 
 <style>
@@ -20,7 +25,7 @@
 		border-radius: 0;
 		width: 100%;
 		font-size: 16px;
-		
+
 		color: var(--input-text-color);
 	}
 

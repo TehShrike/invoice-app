@@ -1,5 +1,6 @@
+import { mount } from 'svelte'
 import Index from './Index.svelte'
 
-new Index({
+mount(Index, {
 	target: document.body,
 })

@@ -1,83 +1,97 @@
-<script lang=ts>
+<script lang="ts">
+	import { fromStore } from 'svelte/store'
 	import type { Writable } from 'svelte/store'
 	import number from 'financial-number'
 	import type { FinancialNumber } from 'financial-number'
 
 	import ListInputStyle from './ListInputStyle.svelte'
 
-	export let min = 0
-	export let max: number | null = null
-	export let disabled = false
-	export let precision = 2
+	let {
+		min = 0,
+		max = null,
+		disabled = false,
+		precision = 2,
+		store,
+		set_focus = $bindable(),
+		onfocus,
+		onblur,
+		...rest_props
+	}: {
+		min?: number | null,
+		max?: number | null,
+		disabled?: boolean,
+		precision?: number,
+		store: Writable<FinancialNumber>,
+		set_focus?: () => void,
+		onfocus?: () => void,
+		onblur?: () => void,
+		[key: string]: any,
+	} = $props()
 
-	export let store: Writable<FinancialNumber>
+	const store_value = fromStore(store)
 
 	let input_element: HTMLInputElement
 
-	export const set_focus = () => {
+	set_focus = () => {
 		input_element.focus()
 	}
 
-	$: step = (10 ** -precision).toString()
+	let step = $derived((10 ** -precision).toString())
 
-	$: min !== null && typeof min !== `number` && console.error(`min should be of type number instead of "${typeof min}" ("${min}")`)
-	$: max !== null && typeof max !== `number` && console.error(`max should be of type number instead of "${typeof max}" ("${max}")`)
-	$: typeof precision !== `number` && console.error(`precision should be of type number instead of "${typeof precision}" ("${precision}")`)
-
-	const handle_input_value = (input_value: number) => {
-		const does_not_exceed_max = max === null || input_value <= max
-		const does_not_subceed_min = min === null || input_value >= min
+	const handle_input_value = (new_input_value: number) => {
+		const does_not_exceed_max = max === null || new_input_value <= max
+		const does_not_subceed_min = min === null || new_input_value >= min
 		if (
-			typeof input_value === `number`
+			typeof new_input_value === `number`
 			&& does_not_subceed_min
 			&& does_not_exceed_max
-			&& number(input_value.toString()).mod(step).equal(`0`)
+			&& number(new_input_value.toString()).mod(step).equal(`0`)
 		) {
-			$store = number(input_value.toString()).changePrecision(precision)
+			store.set(number(new_input_value.toString()).changePrecision(precision))
 		}
 	}
 
 	const validate_input_value = () => {
 		if (input_value === null) {
-			$store = number(`0`).changePrecision(precision)
+			store.set(number(`0`).changePrecision(precision))
 		}
 
-		// I think this might be extraneous now – I wish I could detect the difference between
-		// "empty" and "user typed jibberish"
-		if (input_value === null || !$store.equal(input_value.toString())) {
-			input_value = parseFloat($store.toString())
+		const current = store_value.current
+		if (input_value === null || !current.equal(input_value.toString())) {
+			input_value = parseFloat(current.toString())
 		}
 
-		if ($store.getPrecision() !== number(input_value.toString()).getPrecision()) {
-			input_element.value = $store.toString()
+		if (current.getPrecision() !== number(input_value.toString()).getPrecision()) {
+			input_element.value = current.toString()
 		}
 	}
 
-	let input_value: number = parseFloat($store.toString())
-	
-	$: input_element && validate_input_value()
+	let input_value: number | null = $state(parseFloat(store_value.current.toString()))
 
-	$: input_element && handle_input_value(input_value)
+	$effect(() => {
+		if (input_element && input_value !== null) {
+			handle_input_value(input_value)
+		}
+	})
 
 	const on_focus = () => {
 		input_element.select()
+		onfocus?.()
 	}
 </script>
 
 <ListInputStyle>
 	<input
 		type="number"
-		min={min}
-		max={max}
-		step={step}
+		{min}
+		{max}
+		{step}
 		bind:value={input_value}
-		disabled={disabled}
-		on:blur={validate_input_value}
+		{disabled}
+		onblur={() => { validate_input_value(); onblur?.() }}
 		bind:this={input_element}
-		on:focus
-		on:focus={on_focus}
-		on:blur
-		{...$$restProps}
+		onfocus={on_focus}
+		{...rest_props}
 	/>
 </ListInputStyle>
 

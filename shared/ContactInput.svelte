@@ -1,6 +1,6 @@
 <!-- either an email, phone number, or address -->
 
-<script lang=ts context=module>
+<script lang="ts" module>
 	export type InputTypes = `email` | `phone` | `address`
 
 	export const type_names: {
@@ -14,27 +14,38 @@
 	export const is_valid_contact_type = (str: string): str is InputTypes => str in type_names
 </script>
 
-<script lang=ts>
+<script lang="ts">
 	import InputStyle from 'shared/InputStyle.svelte'
 	import Label from 'shared/Label.svelte'
 
-	export let allowed_types: InputTypes[] = [ `email`, `phone`, `address` ]
-	export let current_type: InputTypes | null = null
-	export let value = ``
-	export let element: HTMLTextAreaElement | null = null
+	let {
+		allowed_types = [`email`, `phone`, `address`],
+		current_type = $bindable<InputTypes | null>(null),
+		value = $bindable(``),
+		element = $bindable<HTMLTextAreaElement | null>(null),
+	}: {
+		allowed_types?: InputTypes[],
+		current_type?: InputTypes | null,
+		value?: string,
+		element?: HTMLTextAreaElement | null,
+	} = $props()
 
-	let allowed_types_set = new Set(allowed_types)
+	let allowed_types_set = $state(new Set(allowed_types))
 
-	$: if (
-		allowed_types.length !== allowed_types_set.size
-		|| allowed_types.some(type => !allowed_types_set.has(type))
-	) {
-		allowed_types_set = new Set(allowed_types)
-	}
+	$effect(() => {
+		if (
+			allowed_types.length !== allowed_types_set.size
+			|| allowed_types.some(type => !allowed_types_set.has(type))
+		) {
+			allowed_types_set = new Set(allowed_types)
+		}
+	})
 
-	$: label = current_type
-		? type_names[current_type]
-		: allowed_types.map(type => type_names[type]).join(`/`)
+	let label = $derived(
+		current_type
+			? type_names[current_type]
+			: allowed_types.map(type => type_names[type]).join(`/`)
+	)
 
 	const email_regex = /[^ ]+@[^ ]+\.[^ ]+/
 	const is_email = (value: string) => email_regex.test(value)
@@ -73,11 +84,11 @@
 		}
 	}
 
-	$: replicated_value_for_sizing = allowed_types_set && value + (current_type === `address` ? `\n` : ``)
-
 	const get_replicated_value_for_sizing = (value: string, current_type: string | null) => value + (current_type === `address` ? `\n` : ``)
 
-	$: allowed_types_set && assign_best_guess_at_type(value)
+	$effect(() => {
+		allowed_types_set && assign_best_guess_at_type(value)
+	})
 </script>
 
 <Label>
@@ -88,11 +99,11 @@
 			data-replicated-value={get_replicated_value_for_sizing(value, current_type)}
 		>
 			<textarea
-				rows=1
-				class=input-style
+				rows={1}
+				class="input-style"
 				bind:value
 				bind:this={element}
-			/>
+			></textarea>
 		</div>
 	</InputStyle>
 </Label>

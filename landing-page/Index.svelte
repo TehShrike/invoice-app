@@ -1,5 +1,6 @@
 <script lang="ts">
 	import number from 'financial-number'
+	import { fromStore } from 'svelte/store'
 
 	import Card from 'shared/Card.svelte'
 	import Column from 'shared/Column.svelte'
@@ -10,12 +11,12 @@
 
 	import type { RowStore } from 'shared/list-input/ListInput.svelte'
 
-	import type { NameAndAddress, Invoice, LineItem, Iso8601Date } from './invoice_types'
-	import make_localstorage_store from './localstorage_store'
+	import type { NameAndAddress, Invoice, LineItem, Iso8601Date } from './invoice_types.ts'
+	import make_localstorage_store from './localstorage_store.ts'
 
-	let row_stores: RowStore[]
-	let bill_to: NameAndAddress
-	let seller: NameAndAddress
+	let row_stores: RowStore[] = $state([])
+	let bill_to: NameAndAddress = $state(undefined as any)
+	let seller: NameAndAddress = $state(undefined as any)
 
 	const default_invoice: Invoice = {
 		number: 1001,
@@ -41,32 +42,27 @@
 	}
 
 	const invoice_store = make_localstorage_store(`invoice`, default_invoice)
+	const invoice_store_value = fromStore(invoice_store)
 
-	$: line_items = row_stores
-		? row_stores.map(row => row.store_of_values.get()) as LineItem[]
-		: []
+	let line_items = $derived(
+		row_stores
+			? row_stores.map(row => row.store_of_values.get()) as LineItem[]
+			: []
+	)
 
-	let invoice_number: number
-	let invoice_date: Iso8601Date
+	let invoice_number: number = $state(0)
+	let invoice_date: Iso8601Date = $state(`` as Iso8601Date)
 
-	const update_invoice_store = ({ number, invoice_date, seller, bill_to, line_items }: Invoice) => {
+	$effect(() => {
 		if (seller && bill_to && line_items) {
-			$invoice_store = {
-				number,
+			invoice_store.set({
+				number: invoice_number,
 				invoice_date,
 				seller,
 				bill_to,
 				line_items,
-			}
+			})
 		}
-	}
-
-	$: update_invoice_store({
-		number: invoice_number,
-		invoice_date,
-		seller,
-		bill_to,
-		line_items,
 	})
 </script>
 
@@ -83,7 +79,7 @@
 
 	<Card>
 		<CreateInvoice
-			initial_invoice_state={$invoice_store}
+			initial_invoice_state={invoice_store_value.current}
 			bind:invoice_number
 			bind:invoice_date
 			bind:row_stores
@@ -96,7 +92,7 @@
 		<h2>Printable invoice</h2>
 		{#if seller && bill_to && line_items}
 			<DisplayInvoice
-				invoice={$invoice_store}
+				invoice={invoice_store_value.current}
 			/>
 		{/if}
 	</Card>

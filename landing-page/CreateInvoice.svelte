@@ -10,16 +10,25 @@
 
 	import LineItems from './LineItems.svelte'
 
-	import type { NameAndAddress, Invoice } from './invoice_types'
+	import type { NameAndAddress, Invoice } from './invoice_types.ts'
 
-	export let initial_invoice_state: Invoice
+	let {
+		initial_invoice_state,
+		invoice_number = $bindable(0),
+		invoice_date = $bindable(initial_invoice_state.invoice_date),
+		row_stores = $bindable<RowStore[]>([]),
+		bill_to = $bindable<NameAndAddress>(undefined as any),
+		seller = $bindable<NameAndAddress>(undefined as any),
+	}: {
+		initial_invoice_state: Invoice,
+		invoice_number?: number,
+		invoice_date?: Invoice['invoice_date'],
+		row_stores?: RowStore[],
+		bill_to?: NameAndAddress,
+		seller?: NameAndAddress,
+	} = $props()
 
-	export let invoice_number = initial_invoice_state.number
-	export let invoice_date = initial_invoice_state.invoice_date
-
-	export let row_stores: RowStore[] = []
-	export let bill_to: NameAndAddress
-	export let seller: NameAndAddress
+	invoice_number = initial_invoice_state.number
 
 	const name_and_address_to_contact_detail = (name_and_address: NameAndAddress): ContactDetail[] => Object.entries(name_and_address)
 		.map(([ key, value ]) => {
@@ -31,21 +40,11 @@
 		})
 		.filter((contact): contact is ContactDetail => contact !== null)
 
-	let bill_to_name = initial_invoice_state.bill_to.name
-	let bill_to_details: ContactDetail[] = name_and_address_to_contact_detail(initial_invoice_state.bill_to)
+	let bill_to_name = $state(initial_invoice_state.bill_to.name)
+	let bill_to_details: ContactDetail[] = $state(name_and_address_to_contact_detail(initial_invoice_state.bill_to))
 
-	let seller_name = initial_invoice_state.seller.name
-	let seller_details: ContactDetail[] = name_and_address_to_contact_detail(initial_invoice_state.seller)
-
-	$: bill_to = {
-		name: bill_to_name,
-		...details_to_object(bill_to_details)
-	}
-
-	$: seller = {
-		name: seller_name,
-		...details_to_object(seller_details)
-	}
+	let seller_name = $state(initial_invoice_state.seller.name)
+	let seller_details: ContactDetail[] = $state(name_and_address_to_contact_detail(initial_invoice_state.seller))
 
 	const details_to_object = (contact_details: ContactDetail[]) => ({
 		address: null,
@@ -54,12 +53,25 @@
 		...Object.fromEntries(contact_details.map(({ current_type, value }) => [ current_type, value ]))
 	})
 
+	$effect(() => {
+		bill_to = {
+			name: bill_to_name,
+			...details_to_object(bill_to_details)
+		}
+	})
+
+	$effect(() => {
+		seller = {
+			name: seller_name,
+			...details_to_object(seller_details)
+		}
+	})
 </script>
 
 <div class="container_column">
 	<div class="document_grid">
 		<BorderedSection>
-			<h3 class=accent-bottom>Your information</h3>
+			<h3 class="accent-bottom">Your information</h3>
 			<Label>
 				Your name or company
 				<InputStyle>
@@ -72,7 +84,7 @@
 		<span></span>
 
 		<BorderedSection>
-			<h3 class=accent-bottom>Bill to</h3>
+			<h3 class="accent-bottom">Bill to</h3>
 			<Label>
 				Name or company
 				<InputStyle>

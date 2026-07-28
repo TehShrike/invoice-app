@@ -1,10 +1,10 @@
-<script lang=ts>
-	import type { Invoice } from './invoice_types'
+<script lang="ts">
+	import type { Invoice } from './invoice_types.ts'
 
-	export let invoice: Invoice
+	let { invoice }: { invoice: Invoice } = $props()
 </script>
 
-<div class=invoice>
+<div class="invoice">
 	<p>{invoice.seller.name}</p>
 	<p>{invoice.bill_to.name}</p>
 </div>

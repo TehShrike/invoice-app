@@ -1,19 +1,20 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
-  "include": ["./landing-page/**/*","./shared/**/*"],
+  "include": ["./landing-page/**/*.ts", "./landing-page/**/*.svelte", "./shared/**/*.ts", "./shared/**/*.svelte"],
   "exclude": ["node_modules/**", "public/**"],
   "compilerOptions": {
-    "target": "es2022",
-    "module": "esnext",
-    "rootDir": "./",
+    "module": "nodenext",
+    "target": "esnext",
+    "lib": ["esnext", "dom"],
+    "types": ["svelte"],
+
     "sourceMap": true,
-    "importsNotUsedAsValues": "error",
-    "preserveValueImports": true,
-    "isolatedModules": true,
-    "esModuleInterop": false,
-    "forceConsistentCasingInFileNames": true,
+
     "strict": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
     "skipLibCheck": true,
-    "moduleResolution": "node"
+
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   }
 }

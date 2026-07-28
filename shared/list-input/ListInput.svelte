@@ -1,5 +1,5 @@
-<script context=module lang=ts>
-	import type { SvelteComponent } from 'svelte'
+<script module lang="ts">
+	import type { Component } from 'svelte'
 
 	export type AnyRow = {
 		[key: string]: any
@@ -8,7 +8,7 @@
 	export type Column<Row> = {
 		name: string,
 		property?: string,
-		component: typeof SvelteComponent,
+		component: Component<any>,
 		header_text_align?: `right` | `left`
 		initial_fraction?: number,
 		width?: string,
@@ -18,7 +18,7 @@
 		}
 	}
 
-	export type RowStore ={
+	export type RowStore = {
 		object_of_stores: {
 			[key: string]: WargObservable<any>
 		},
@@ -35,25 +35,34 @@
 	}
 </script>
 
-<script lang=ts>
-	import { createEventDispatcher } from 'svelte'
+<script lang="ts">
+	import { fromStore } from 'svelte/store'
+	import { untrack } from 'svelte'
 	import type { BasicObservable, WargObservable } from 'warg'
 
 	import { computed as warg_computed, value as warg_value } from 'warg'
 
-	const dispatch = createEventDispatcher()
+	let {
+		columns,
+		rows = [],
+		external_stores = {},
+		empty_row_factory,
+		row_is_empty_predicate,
+		row_stores = $bindable([]),
+		ondelete,
+	}: {
+		columns: Array<Column<AnyRow>>,
+		rows?: Array<AnyRow>,
+		external_stores?: { [key: string]: BasicObservable<any> },
+		empty_row_factory: () => { [key: string]: any },
+		row_is_empty_predicate: (row: AnyRow) => boolean,
+		row_stores?: Array<ReturnType<typeof row_to_stores>>,
+		ondelete?: (detail: ColumnEvent) => void,
+	} = $props()
 
-	export let columns: Array<Column<AnyRow>>
-	export let rows: Array<AnyRow> = []
-	export let external_stores: {
-		[key: string]: BasicObservable<any>
-	} = {}
-	export let empty_row_factory: () => { [key: string] : any }
-	export let row_is_empty_predicate: (row: AnyRow) => boolean
-
-	$: grid_template_columns = columns.map(
+	let grid_template_columns = $derived(columns.map(
 		({ initial_fraction = 1, width }) => width ? width : `${initial_fraction}fr`,
-	).join(` `)
+	).join(` `))
 
 	let row_key = 0
 	const row_to_stores = (row: AnyRow) => {
@@ -93,16 +102,16 @@
 		}
 	}
 
-	// row_stores is the canonical array that should be written to when state needs to change
-	export let row_stores = rows.map(row_to_stores)
+	if (row_stores.length === 0) {
+		row_stores = rows.map(row_to_stores)
+	}
 
 	const make_store_that_updates_when_array_contents_change = (row_stores: Array<ReturnType<typeof row_to_stores>>) => {
 		const index_to_values_object = Object.fromEntries(row_stores.map(
 			({ store_of_values }, index) => [ index, store_of_values ],
 		))
-	
+
 		return warg_computed(
-			// this could theoretically come out in a different order than the original array?  meh
 			index_to_values_object,
 			rows_object => Object.values(rows_object),
 		)
@@ -129,7 +138,7 @@
 		let last_row_is_empty = cleaned_up.length > 0
 			&& row_is_empty_predicate(cleaned_up[cleaned_up.length - 1].store_of_values.get())
 
-	
+
 		if (!last_row_is_empty) {
 			cleaned_up.push(row_to_stores(empty_row_factory()))
 			changed = true
@@ -141,11 +150,24 @@
 		}
 	}
 
-	$: row_contents_store = make_store_that_updates_when_array_contents_change(row_stores)
-	$: $row_contents_store && row_stores && clean_up_empty_rows_and_ensure_final_is_empty()
-	$: $row_contents_store && row_stores && update_rows_property()
+	let row_contents_store = $state(make_store_that_updates_when_array_contents_change(row_stores))
 
-	const focus_functions: {[key: string]: () => {}} = {}
+	$effect(() => {
+		row_contents_store = make_store_that_updates_when_array_contents_change(row_stores)
+	})
+
+	$effect(() => {
+		const current_store = row_contents_store
+		const store_value = fromStore(current_store)
+		// read the value to track changes
+		const _value = store_value.current
+		untrack(() => {
+			clean_up_empty_rows_and_ensure_final_is_empty()
+			update_rows_property()
+		})
+	})
+
+	const focus_functions: {[key: string]: () => void} = {}
 
 	const on_keypress = (event: KeyboardEvent, row_key: number, column_index: number) => {
 		if (event.key === `Enter`) {
@@ -159,12 +181,12 @@
 		}
 	}
 
-	let current_focused_row_key: null | number = null
+	let current_focused_row_key: null | number = $state(null)
 
 	const on_focus = (row_key: number) => {
 		current_focused_row_key = row_key
 	}
-	
+
 	const on_blur = (row_key: number) => {
 		if (row_key === current_focused_row_key) {
 			current_focused_row_key = null
@@ -172,39 +194,41 @@
 		setTimeout(clean_up_empty_rows_and_ensure_final_is_empty, 0)
 	}
 
-	const dispatch_column_event = (event_name: string, column_information: ColumnEvent, event_details = {}) => {
-		dispatch(event_name, {
-			...column_information,
-			...event_details,
-		})
+	const dispatch_column_event = (event_name: string, column_information: ColumnEvent, event_details: Record<string, any> = {}) => {
+		if (event_name === `delete`) {
+			ondelete?.({
+				...column_information,
+				...event_details,
+			})
+		}
 	}
 </script>
 
-<div role=table>
-	<div style="grid-template-columns: {grid_template_columns};" role=row>
+<div role="table">
+	<div style="grid-template-columns: {grid_template_columns};" role="row">
 		{#each columns as column}
-			<div data-header-text-align={column.header_text_align} role=columnheader>
+			<div data-header-text-align={column.header_text_align} role="columnheader">
 				{column.name}
 			</div>
-		{/each}			
+		{/each}
 	</div>
 
 	{#each row_stores as { object_of_stores, key }, row_index (key)}
-		<div style="grid-template-columns: {grid_template_columns};" role=row>
+		<div style="grid-template-columns: {grid_template_columns};" role="row">
 			{#each columns as column, column_index}
 				{@const row_store = column.property && object_of_stores[column.property]}
-				<div 
-					role=cell 
-					on:keypress={event => on_keypress(event, key, column_index)}
+				{@const ColumnComponent = column.component}
+				<div
+					role="cell"
+					onkeypress={event => on_keypress(event, key, column_index)}
 					style="--input-text-color: {row_index === row_stores.length - 1 ? `var(--mid-gray)` : `var(--black)`};"
 				>
-					<svelte:component
-						this={column.component}
+					<ColumnComponent
 						store={row_store}
 						bind:set_focus={focus_functions[`${key}-${column_index}`]}
-						on:focus={() => on_focus(key)}
-						on:blur={() => on_blur(key)}
-						on:column_event={({ detail: { event, ...rest } }) => dispatch_column_event(event, {
+						onfocus={() => on_focus(key)}
+						onblur={() => on_blur(key)}
+						on_column_event={({ event, ...rest }: { event: string, [key: string]: any }) => dispatch_column_event(event, {
 							index: row_index,
 							row_key: key,
 							row_store,

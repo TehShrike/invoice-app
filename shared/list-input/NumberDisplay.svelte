@@ -1,15 +1,17 @@
-<script lang=ts>
+<script lang="ts">
+	import { fromStore } from 'svelte/store'
 	import type { Writable } from 'svelte/store'
 	import ListInputStyle from './ListInputStyle.svelte'
 	import type { FinancialNumber } from 'financial-number'
 
-	export let store: Writable<FinancialNumber>
+	const { store }: { store: Writable<FinancialNumber> } = $props()
+	const store_value = fromStore(store)
 </script>
 
 <ListInputStyle>
 	<div class="input-style handles-own-background">
-		{#if $store !== null}
-			{$store.toString()}
+		{#if store_value.current !== null}
+			{store_value.current.toString()}
 		{/if}
 	</div>
 </ListInputStyle>

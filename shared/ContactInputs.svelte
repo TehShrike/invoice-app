@@ -1,4 +1,4 @@
-<script lang=ts context=module>
+<script lang="ts" module>
 	export type Detail = {
 		current_type: InputTypes,
 		value: string
@@ -7,11 +7,15 @@
 	export type Details = Detail[]
 </script>
 
-<script lang=ts>
+<script lang="ts">
 	import ContactInput from 'shared/ContactInput.svelte'
 	import type { InputTypes } from 'shared/ContactInput.svelte'
 
-	export let current_details: Details = []
+	let {
+		current_details = $bindable<Details>([]),
+	}: {
+		current_details?: Details,
+	} = $props()
 
 	type DisplayDetail = Omit<Detail, `current_type`> & {
 		current_type: InputTypes | null,
@@ -20,21 +24,21 @@
 	}
 
 	let next_identity = 0
-	const make_empty_value = () => ({
+	const make_empty_value = (): DisplayDetail => ({
 		current_type: null,
 		value: ``,
 		element: null,
 		identity: next_identity++
 	})
 
-	let display_details: DisplayDetail[] = [
+	let display_details: DisplayDetail[] = $state([
 		...current_details.map((detail): DisplayDetail => ({
 			identity: next_identity++,
 			element: null,
 			...detail
 		})),
 		make_empty_value()
-	]
+	])
 
 	const all_possible_types: InputTypes[] = [ `email`, `phone`, `address` ]
 
@@ -49,8 +53,6 @@
 	}
 
 	const only_keep_appropriate_empty_row = (rows: DisplayDetail[]): DisplayDetail[] => {
-		// if the current focused element is empty, keep it and get rid of the rest
-		// otherwise, keep the first empty one and get rid of the rest
 		const active_element = document.activeElement
 
 		const empty_to_keep = rows.reduce((best_so_far: DisplayDetail | null, current) => {
@@ -73,7 +75,8 @@
 	type CountFunction = <T>(array: Array<T>, predicate: (element: T) => boolean) => number
 	const count: CountFunction = (array, predicate) => array.reduce((total, element) => total + (predicate(element) ? 1 : 0), 0)
 
-	const on_display_details = (latest_display_details: DisplayDetail[]) => {
+	$effect(() => {
+		const latest_display_details = display_details
 		current_details = latest_display_details.filter(is_valid_detail) as Details
 		if (!latest_display_details.some(({ value }) => value === ``) && latest_display_details.length < all_possible_types.length) {
 			display_details = [
@@ -83,9 +86,7 @@
 		} else if (count(latest_display_details, ({ value }) => value === ``) > 1) {
 			display_details = only_keep_appropriate_empty_row(display_details)
 		}
-	}
-
-	$: on_display_details(display_details)
+	})
 </script>
 
 {#each display_details as detail, index (detail.identity)}

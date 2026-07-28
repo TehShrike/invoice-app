@@ -1,29 +1,43 @@
-<script lang=ts>
+<script lang="ts">
+	import { fromStore } from 'svelte/store'
 	import type { Writable } from 'svelte/store'
 	import ListInputStyle from './ListInputStyle.svelte'
 
-	export let disabled = false
+	let {
+		disabled = false,
+		store,
+		set_focus = $bindable(),
+		onfocus,
+		onblur,
+	}: {
+		disabled?: boolean,
+		store: Writable<string>,
+		set_focus?: () => void,
+		onfocus?: () => void,
+		onblur?: () => void,
+	} = $props()
 
-	export let store: Writable<string>
+	const store_value = fromStore(store)
 
 	let input_element: HTMLInputElement
 
-	export const set_focus = () => {
+	set_focus = () => {
 		input_element.focus()
 	}
 	const on_focus = () => {
 		input_element.select()
+		onfocus?.()
 	}
 </script>
 
 <ListInputStyle>
 	<input
-		type=text
-		bind:value={$store}
-		disabled={disabled}
+		type="text"
+		value={store_value.current}
+		oninput={e => store.set(e.currentTarget.value)}
+		{disabled}
 		bind:this={input_element}
-		on:focus
-		on:focus={on_focus}
-		on:blur
+		onfocus={on_focus}
+		onblur={onblur}
 	/>
 </ListInputStyle>

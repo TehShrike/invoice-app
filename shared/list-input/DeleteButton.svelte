@@ -1,17 +1,29 @@
-<script lang=ts>
-	import { createEventDispatcher } from 'svelte'
+<script lang="ts">
+	import { fromStore } from 'svelte/store'
 	import type { Writable } from 'svelte/store'
 
-	const dispatch = createEventDispatcher()
+	let {
+		store,
+		set_focus = $bindable(),
+		onfocus,
+		onblur,
+		on_column_event,
+	}: {
+		store: Writable<boolean>,
+		set_focus?: () => void,
+		onfocus?: () => void,
+		onblur?: () => void,
+		on_column_event?: (detail: { event: string }) => void,
+	} = $props()
 
-	export let store: Writable<boolean>
+	const store_value = fromStore(store)
 
 	let input_element: HTMLButtonElement
 
-	export const set_focus = () => input_element.focus()
+	set_focus = () => input_element.focus()
 
 	const on_click = () => {
-		dispatch(`column_event`, {
+		on_column_event?.({
 			event: `delete`,
 		})
 	}
@@ -25,13 +37,13 @@
 
 <div class="button-wrapper">
 	<button
-		class=input-style
+		class="input-style"
 		bind:this={input_element}
-		on:click={on_click}
-		on:focus
-		on:blur
-		on:keypress={on_keypress}
-		disabled={!$store}
+		onclick={on_click}
+		onfocus={onfocus}
+		onblur={onblur}
+		onkeypress={on_keypress}
+		disabled={!store_value.current}
 	>
 		❌
 	</button>
